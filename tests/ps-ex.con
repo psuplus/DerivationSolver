@@ -1,0 +1,46 @@
+; assertions to be verified
+PTask ignored
+PTask ignored
+ I2 <: UseImm     ; UseImm = ((((((((((((((((I2[31:26]==35)|(I2[31:26]==43))|(I2[31:26]==36))|(I2[31:26]==32))|(I2[31:26]==37))|(I2[31:26]==33))|(I2[31:26]==41))|(I2[31:26]==40))|(I2[31:26]==8))|(I2[31:26]==9))|(I2[31:26]==10))|(I2[31:26]==11))|(I2[31:26]==12))|(I2[31:26]==13))|(I2[31:26]==14))|(I2[31:26]==15))|(And (I2[31:26]==0 , ((I2[5:0]==0)|(I2[5:0]==2))|(I2[5:0]==3))) @ex.v:48
+ I2 <: ALUsel     ; ALUsel = 1 @ex.v:64
+ I2 <: ALUsel     ; ALUsel = 1 @ex.v:65
+ I2 <: ALUsel     ; ALUsel = 33 @ex.v:66
+ I2 <: ALUsel     ; ALUsel = 33 @ex.v:67
+ I2 <: ALUsel     ; ALUsel = 96 @ex.v:68
+ I2 <: ALUsel     ; ALUsel = 64 @ex.v:69
+ I2 <: ALUsel     ; ALUsel = 2 @ex.v:70
+ I2 <: ALUsel     ; ALUsel = 8 @ex.v:71
+ I2 <: ALUsel     ; ALUsel = 4 @ex.v:72
+ I2 <: ALUsel     ; ALUsel = 16 @ex.v:73
+ I2 <: ALUsel     ; ALUsel = 130 @ex.v:74
+ I2 <: ALUsel     ; ALUsel = 129 @ex.v:75
+ I2 <: ALUsel     ; ALUsel = 132 @ex.v:76
+ I2 <: ALUsel     ; ALUsel = 132 @ex.v:77
+ I2 <: ALUsel     ; ALUsel = 130 @ex.v:78
+ I2 <: ALUsel     ; ALUsel = 129 @ex.v:79
+ I2 <: ALUsel     ; ALUsel = 1 @ex.v:81
+ I2 <: ALUsel     ; ALUsel = 1 @ex.v:82
+ I2 <: ALUsel     ; ALUsel = 96 @ex.v:83
+ I2 <: ALUsel     ; ALUsel = 64 @ex.v:84
+ I2 <: ALUsel     ; ALUsel = 2 @ex.v:85
+ I2 <: ALUsel     ; ALUsel = 8 @ex.v:86
+ I2 <: ALUsel     ; ALUsel = 4 @ex.v:87
+ I2 <: ALUsel     ; ALUsel = 8 @ex.v:89
+ I2 <: ALUsel     ; ALUsel = 1 @ex.v:91
+ I2 <: ALUsel     ; ALUsel = 1 @ex.v:92
+ I2 <: ALUsel     ; ALUsel = 1 @ex.v:93
+ I2 <: ALUsel     ; ALUsel = 1 @ex.v:94
+ I2 <: ALUsel     ; ALUsel = 1 @ex.v:95
+ I2 <: ALUsel     ; ALUsel = 1 @ex.v:96
+ I2 <: ALUsel     ; ALUsel = 1 @ex.v:97
+ I2 <: ALUsel     ; ALUsel = 1 @ex.v:98
+ I2 <: ALUsel     ; ALUsel = -1 @ex.v:100
+ I2 <: QCsel     ; QCsel = 2 @ex.v:110
+ I2 <: QCsel     ; QCsel = 1 @ex.v:111
+ I2 <: QCsel     ; QCsel = 4 @ex.v:112
+ I2 <: QCsel     ; QCsel = 8 @ex.v:113
+ I2 <: QCsel     ; QCsel = 32 @ex.v:114
+ I2 <: QCsel     ; QCsel = 16 @ex.v:115
+ I2 <: QCsel     ; QCsel = 16 @ex.v:116
+ I2 <: QCsel     ; QCsel = 32 @ex.v:117
+ I2 <: QCsel     ; QCsel = -1 @ex.v:118

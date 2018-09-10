@@ -1,0 +1,20 @@
+; assertions to be verified
+ L <: L     ; Bus = BusReg @mips.v:151
+ L <: L     ; Bus = 0 @mips.v:151
+(MRST==1)  =>  L <: L     ; Valid <= 0 @mips.v:100
+(MRST==1)  =>  L <: L     ; currentWord <= 0 @mips.v:101
+(MRST==1)  =>  L <: L     ; startRead <= 0 @mips.v:102
+(MRST==1)  =>  L <: L     ; scheduled <= 0 @mips.v:103
+ L <: L     ; startRead <= 1 @mips.v:107
+ L <: L     ; scheduled <= 1 @mips.v:108
+(Read==1) (startRead==1)  =>  L <: L     ; BusReg <= $load_mm({Addr[31:5], currentWord[2:0], 0}) @mips.v:118
+(Read==1) (startRead==1)  =>  L <: L     ; Valid <= 1 @mips.v:119
+(Read==1) (startRead==1) (Not( currentWord==7))  =>  L <: L     ; currentWord <= (currentWord)+(1) @mips.v:121
+(Read==1) (startRead==1) (Not(Not( currentWord==7)))  =>  L <: L     ; startRead <= 0 @mips.v:124
+(startRead==1) (Not(Read==1))  =>  L <: L     ; Valid <= 0 @mips.v:128
+(startRead==1) (Not(Read==1))  =>  L <: L     ; scheduled <= 0 @mips.v:129
+(startRead==1) (Not(Read==1))  =>  L <: L     ; startRead <= 0 @mips.v:130
+(startRead==1) (Not(Read==1))  =>  L <: L     ; currentWord <= 0 @mips.v:131
+(Not(startRead==1))  =>  L <: L     ; Valid <= 0 @mips.v:135
+(Not( currentWord==0)) (Not(startRead==1))  =>  L <: L     ; scheduled <= 0 @mips.v:137
+(Not( currentWord==0)) (Not(startRead==1))  =>  L <: L     ; currentWord <= 0 @mips.v:138

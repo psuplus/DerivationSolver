@@ -1,0 +1,11 @@
+; assertions to be verified
+(WBsel==5)  =>  I4 <: WBsel     ; WBsel = 5 @wb.v:23
+(WBsel==5)  =>  I4 <: WBsel     ; WBsel = 5 @wb.v:24
+(WBsel==5)  =>  I4 <: WBsel     ; WBsel = 5 @wb.v:25
+(WBsel==5)  =>  I4 <: WBsel     ; WBsel = 5 @wb.v:26
+(WBsel==5)  =>  I4 <: WBsel     ; WBsel = 5 @wb.v:27
+(WBsel==3)  =>  I4 <: WBsel     ; WBsel = 3 @wb.v:30
+(WBsel==3)  =>  I4 <: WBsel     ; WBsel = 3 @wb.v:31
+(WBsel==3)  =>  I4 <: WBsel     ; WBsel = 3 @wb.v:32
+(WBsel==3)  =>  I4 <: WBsel     ; WBsel = 3 @wb.v:33
+(WBsel==6)  =>  I4 <: WBsel     ; WBsel = 6 @wb.v:36

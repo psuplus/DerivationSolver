@@ -1,0 +1,9 @@
+; assertions to be verified
+(way==0)  =>  H <: H     ; mem0[{index, offset}] = din @ddram.v:65
+(way==1)  =>  H <: H     ; mem1[{index, offset}] = din @ddram.v:68
+(way==2)  =>  H <: H     ; mem2[{index, offset}] = din @ddram.v:71
+(way==3)  =>  H <: H     ; mem3[{index, offset}] = din @ddram.v:74
+(en==1)  =>  H <: H     ; dout0 = mem0[{index, offset}] @ddram.v:83
+(en==1)  =>  H <: H     ; dout1 = mem1[{index, offset}] @ddram.v:84
+(en==1)  =>  H <: H     ; dout2 = mem2[{index, offset}] @ddram.v:85
+(en==1)  =>  H <: H     ; dout3 = mem3[{index, offset}] @ddram.v:86

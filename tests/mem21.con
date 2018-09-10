@@ -1,0 +1,59 @@
+; assertions to be verified
+ (join dStall iStall) <: pipeInhibit     ; assign pipeInhibit = (dStall)|(iStall) @mem21.v:329
+(Iin==iDataRamMuxOut)  =>  (join iDataRamMuxOut iStall) <: Iin     ; Iin = iDataRamMuxOut @mem21.v:341
+(Iin==0)  =>  iStall <: Iin     ; Iin = 0 @mem21.v:341
+(isLoad==1)  =>  H <: H     ; cacheOut = dDataRamMuxOut @mem21.v:344
+(Not(isLoad==1))  =>  isLoad <: H     ; cacheOut = 0 @mem21.v:344
+(MRST==1)  =>  L <: H     ; CPU.numLoads <= 0 @mem21.v:306
+(MRST==1)  =>  L <: H     ; CPU.numStores <= 0 @mem21.v:307
+ H <: H     ; CPU.numLoads <= (CPU.numLoads)+(1) @mem21.v:311
+ H <: H     ; CPU.numStores <= (CPU.numStores)+(1) @mem21.v:314
+(pcInhibit==0) (MRST==1)  =>  L <: pcInhibit     ; pcInhibit <= 0 @mem21.v:333
+(pcInhibit==pipeInhibit) (Not(MRST==1))  =>  pipeInhibit <: pcInhibit     ; pcInhibit <= pipeInhibit @mem21.v:336
+(MRST==1)  =>  L <: dFsmState     ; no-sensitive-upgrade check dFsmState <= IFSM_IDLE @mem21.v:356
+(MRST==1) (dFsmState==IFSM_IDLE)  =>  L <: dFsmState     ; dFsmState <= IFSM_IDLE @mem21.v:356
+(MRST==1)  =>  L <: dTagRamWe     ; no-sensitive-upgrade check dTagRamWe <= 0 @mem21.v:359
+(MRST==1) (dTagRamWe==0)  =>  L <: dTagRamWe     ; dTagRamWe <= 0 @mem21.v:359
+(dStateWay==2) (MRST==1)  =>  L <: H     ; dStateRamWe <= 0 @mem21.v:360
+(dStateWay==3) (MRST==1)  =>  L <: H     ; dStateRamWe <= 0 @mem21.v:360
+(dStateWay==1) (MRST==1)  =>  L <: L     ; dStateRamWe <= 0 @mem21.v:360
+(dStateWay==0) (MRST==1)  =>  L <: L     ; dStateRamWe <= 0 @mem21.v:360
+(dStateWay==2) (MRST==1)  =>  L <: H     ; dStateRamIn <= 0 @mem21.v:361
+(dStateWay==3) (MRST==1)  =>  L <: H     ; dStateRamIn <= 0 @mem21.v:361
+(dStateWay==1) (MRST==1)  =>  L <: L     ; dStateRamIn <= 0 @mem21.v:361
+(dStateWay==0) (MRST==1)  =>  L <: L     ; dStateRamIn <= 0 @mem21.v:361
+(ReadLabel==0) (MRST==1)  =>  L <: L     ; dDataRamWe <= 0 @mem21.v:362
+(ReadLabel==1) (MRST==1)  =>  L <: H     ; dDataRamWe <= 0 @mem21.v:362
+(MRST==1)  =>  L <: dOffset     ; no-sensitive-upgrade check dOffset <= {3{0}} @mem21.v:363
+(MRST==1)  =>  L <: dOffset     ; dOffset <= {3{0}} @mem21.v:363
+(dStateWay==2) (MRST==1)  =>  L <: H     ; dDataRamIn <= 0 @mem21.v:364
+(dStateWay==3) (MRST==1)  =>  L <: H     ; dDataRamIn <= 0 @mem21.v:364
+(dStateWay==1) (MRST==1)  =>  L <: L     ; dDataRamIn <= 0 @mem21.v:364
+(dStateWay==0) (MRST==1)  =>  L <: L     ; dDataRamIn <= 0 @mem21.v:364
+(MRST==1)  =>  L <: dMemRead     ; no-sensitive-upgrade check dMemRead <= 0 @mem21.v:367
+(MRST==1) (dMemRead==0)  =>  L <: dMemRead     ; dMemRead <= 0 @mem21.v:367
+(MRST==1)  =>  L <: dMemWrite     ; no-sensitive-upgrade check dMemWrite <= 0 @mem21.v:368
+(MRST==1) (dMemWrite==0)  =>  L <: dMemWrite     ; dMemWrite <= 0 @mem21.v:368
+(MRST==1)  =>  L <: dMemAddr     ; no-sensitive-upgrade check dMemAddr <= 0 @mem21.v:369
+(MRST==1) (dMemAddr==0)  =>  L <: dMemAddr     ; dMemAddr <= 0 @mem21.v:369
+(MRST==1)  =>  L <: BusSel     ; no-sensitive-upgrade check BusSel <= 0 @mem21.v:372
+(MRST==1) (BusSel==0)  =>  L <: BusSel     ; BusSel <= 0 @mem21.v:372
+(MRST==1)  =>  L <: H     ; CPU.numDMisses <= 0 @mem21.v:376
+(dFsmState==DFSM_STOREHIT) (Not(MRST==1))  =>  dFsmState <: dFsmState     ; no-sensitive-upgrade check dFsmState <= DFSM_IDLE @mem21.v:386
+(dFsmState==DFSM_STOREHIT) (dFsmState==DFSM_IDLE) (Not(MRST==1))  =>  dFsmState <: dFsmState     ; dFsmState <= DFSM_IDLE @mem21.v:386
+(dStateWay==2) (dFsmState==DFSM_STOREHIT) (Not(MRST==1))  =>  dFsmState <: H     ; dStateRamWe <= 0 @mem21.v:389
+(dStateWay==3) (dFsmState==DFSM_STOREHIT) (Not(MRST==1))  =>  dFsmState <: H     ; dStateRamWe <= 0 @mem21.v:389
+(dStateWay==1) (dFsmState==DFSM_STOREHIT) (Not(MRST==1))  =>  dFsmState <: L     ; dStateRamWe <= 0 @mem21.v:389
+(dStateWay==0) (dFsmState==DFSM_STOREHIT) (Not(MRST==1))  =>  dFsmState <: L     ; dStateRamWe <= 0 @mem21.v:389
+(ReadLabel==0) (dFsmState==DFSM_STOREHIT) (Not(MRST==1))  =>  dFsmState <: L     ; dDataRamWe <= 0 @mem21.v:390
+(ReadLabel==1) (dFsmState==DFSM_STOREHIT) (Not(MRST==1))  =>  dFsmState <: H     ; dDataRamWe <= 0 @mem21.v:390
+(dFsmState==DFSM_STOREHIT) (Not(MRST==1))  =>  dFsmState <: dOffset     ; no-sensitive-upgrade check dOffset <= {(3)+(1){0}} @mem21.v:391
+(dFsmState==DFSM_STOREHIT) (Not(MRST==1))  =>  dFsmState <: dOffset     ; dOffset <= {(3)+(1){0}} @mem21.v:391
+(dStateWay==2) (dFsmState==DFSM_STOREHIT) (Not(MRST==1))  =>  dFsmState <: H     ; dDataRamIn <= 0 @mem21.v:392
+(dStateWay==3) (dFsmState==DFSM_STOREHIT) (Not(MRST==1))  =>  dFsmState <: H     ; dDataRamIn <= 0 @mem21.v:392
+(dStateWay==1) (dFsmState==DFSM_STOREHIT) (Not(MRST==1))  =>  dFsmState <: L     ; dDataRamIn <= 0 @mem21.v:392
+(dStateWay==0) (dFsmState==DFSM_STOREHIT) (Not(MRST==1))  =>  dFsmState <: L     ; dDataRamIn <= 0 @mem21.v:392
+(dStateWay==2) (dFsmState==DFSM_STOREHIT) (Not(MRST==1))  =>  dFsmState <: H     ; dStateRamIn <= 0 @mem21.v:393
+(dStateWay==3) (dFsmState==DFSM_STOREHIT) (Not(MRST==1))  =>  dFsmState <: H     ; dStateRamIn <= 0 @mem21.v:393
+(dStateWay==1) (dFsmState==DFSM_STOREHIT) (Not(MRST==1))  =>  dFsmState <: L     ; dStateRamIn <= 0 @mem21.v:393
+(dStateWay==0) (dFsmState==DFSM_STOREHIT) (Not(MRST==1))  =>  dFsmState <: L     ; dStateRamIn <= 0 @mem21.v:393

@@ -1,0 +1,21 @@
+; assertions to be verified
+(way==2) (way==0)  =>  (join H (join H (join (join H en) clk))) <: mem0     ; mem0[{index, offset}] = din @idram.v:65
+(way==3) (way==0)  =>  (join H (join H (join (join H en) clk))) <: mem0     ; mem0[{index, offset}] = din @idram.v:65
+(way==0) (way==0)  =>  (join L (join L (join (join L en) clk))) <: mem0     ; mem0[{index, offset}] = din @idram.v:65
+(way==1) (way==0)  =>  (join L (join L (join (join L en) clk))) <: mem0     ; mem0[{index, offset}] = din @idram.v:65
+(way==2) (way==1)  =>  (join H (join H (join (join H en) clk))) <: mem1     ; mem1[{index, offset}] = din @idram.v:68
+(way==3) (way==1)  =>  (join H (join H (join (join H en) clk))) <: mem1     ; mem1[{index, offset}] = din @idram.v:68
+(way==0) (way==1)  =>  (join L (join L (join (join L en) clk))) <: mem1     ; mem1[{index, offset}] = din @idram.v:68
+(way==1) (way==1)  =>  (join L (join L (join (join L en) clk))) <: mem1     ; mem1[{index, offset}] = din @idram.v:68
+(way==2) (way==2)  =>  (join H (join H (join (join H en) clk))) <: H     ; mem2[{index, offset}] = din @idram.v:71
+(way==3) (way==2)  =>  (join H (join H (join (join H en) clk))) <: H     ; mem2[{index, offset}] = din @idram.v:71
+(way==0) (way==2)  =>  (join L (join L (join (join L en) clk))) <: H     ; mem2[{index, offset}] = din @idram.v:71
+(way==1) (way==2)  =>  (join L (join L (join (join L en) clk))) <: H     ; mem2[{index, offset}] = din @idram.v:71
+(way==2) (way==3)  =>  (join H (join H (join (join H en) clk))) <: H     ; mem3[{index, offset}] = din @idram.v:74
+(way==3) (way==3)  =>  (join H (join H (join (join H en) clk))) <: H     ; mem3[{index, offset}] = din @idram.v:74
+(way==0) (way==3)  =>  (join L (join L (join (join L en) clk))) <: H     ; mem3[{index, offset}] = din @idram.v:74
+(way==1) (way==3)  =>  (join L (join L (join (join L en) clk))) <: H     ; mem3[{index, offset}] = din @idram.v:74
+(en==1)  =>  (join mem0 en) <: L     ; dout0 = mem0[{index, offset}] @idram.v:82
+(en==1)  =>  (join mem1 en) <: L     ; dout1 = mem1[{index, offset}] @idram.v:83
+(en==1)  =>  H <: H     ; dout2 = mem2[{index, offset}] @idram.v:84
+(en==1)  =>  H <: H     ; dout3 = mem3[{index, offset}] @idram.v:85

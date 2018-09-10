@@ -1,0 +1,29 @@
+; assertions to be verified
+ (join dStall iStall) <: pipeInhibit     ; assign pipeInhibit = (dStall)|(iStall) @mem1.v:329
+(Iin==iDataRamMuxOut)  =>  (join iDataRamMuxOut iStall) <: Iin     ; Iin = iDataRamMuxOut @mem1.v:341
+(Iin==0)  =>  iStall <: Iin     ; Iin = 0 @mem1.v:341
+(isLoad==1)  =>  H <: H     ; cacheOut = dDataRamMuxOut @mem1.v:344
+(Not(isLoad==1))  =>  isLoad <: H     ; cacheOut = 0 @mem1.v:344
+ (join (join iTagRamOutLow Iaddr) iStateRamOutLow) <: iHit0     ; assign iHit0 = (iTagRamOutLow[0]==Iaddr[31:13])&(iStateRamOutLow[0][0]) @mem1.v:354
+ (join (join iTagRamOutLow Iaddr) iStateRamOutLow) <: iHit1     ; assign iHit1 = (iTagRamOutLow[1]==Iaddr[31:13])&(iStateRamOutLow[1][0]) @mem1.v:355
+ H <: H     ; assign iHit2 = (iTagRamOutHigh[0]==Iaddr[31:13])&(iStateRamOutHigh[0][0]) @mem1.v:356
+ H <: H     ; assign iHit3 = (iTagRamOutHigh[1]==Iaddr[31:13])&(iStateRamOutHigh[1][0]) @mem1.v:357
+ H <: H     ; assign iHitNaive = (((iHit0)|(iHit1))|(iHit2))|(iHit3) @mem1.v:359
+(ReadLabel==0) (Or ( (iHit0 == 1) ,  (iHit1 == 1))) (iHit==1)  =>  (join (join iHit0 iHit1) ReadLabel) <: iHit     ; iHit = 1 @mem1.v:361
+(ReadLabel==0) (Not(Or ( (iHit0 == 1) ,  (iHit1 == 1)))) (iHit==0)  =>  (join (join iHit0 iHit1) ReadLabel) <: iHit     ; iHit = 0 @mem1.v:361
+(iHit==1) (Or (Or (Or ( (iHit0 == 1) ,  (iHit1 == 1)) ,  (iHit2 == 1)) ,  (iHit3 == 1))) (Not(ReadLabel==0))  =>  H <: iHit     ; iHit = 1 @mem1.v:362
+(Not(Or (Or (Or ( (iHit0 == 1) ,  (iHit1 == 1)) ,  (iHit2 == 1)) ,  (iHit3 == 1)))) (iHit==0) (Not(ReadLabel==0))  =>  H <: iHit     ; iHit = 0 @mem1.v:362
+(ReadLabel==0) (iHit0==1)  =>  (join iDataRamOutLow (join iHit0 ReadLabel)) <: iDataRamMuxOut     ; iDataRamMuxOut = iDataRamOutLow[0] @mem1.v:364
+(ReadLabel==0) (Not(iHit0==1)) (iHit1==1)  =>  (join iDataRamOutLow (join iHit1 (join iHit0 ReadLabel))) <: iDataRamMuxOut     ; iDataRamMuxOut = iDataRamOutLow[1] @mem1.v:365
+(ReadLabel==0) (Not(iHit0==1)) (Not(iHit1==1)) (iDataRamMuxOut==0)  =>  (join iHit1 (join iHit0 ReadLabel)) <: iDataRamMuxOut     ; iDataRamMuxOut = 0 @mem1.v:365
+(iHit0==1) (Not(ReadLabel==0))  =>  (join iDataRamOutLow (join iHit0 ReadLabel)) <: iDataRamMuxOut     ; iDataRamMuxOut = iDataRamOutLow[0] @mem1.v:366
+(Not(iHit0==1)) (Not(ReadLabel==0)) (iHit1==1)  =>  (join iDataRamOutLow (join iHit1 (join iHit0 ReadLabel))) <: iDataRamMuxOut     ; iDataRamMuxOut = iDataRamOutLow[1] @mem1.v:367
+(Not(iHit0==1)) (Not(ReadLabel==0)) (Not(iHit1==1)) (iHit2==1)  =>  H <: iDataRamMuxOut     ; iDataRamMuxOut = iDataRamOutHigh[0] @mem1.v:368
+(Not(iHit0==1)) (Not(ReadLabel==0)) (Not(iHit1==1)) (Not(iHit2==1)) (iHit3==1)  =>  H <: iDataRamMuxOut     ; iDataRamMuxOut = iDataRamOutHigh[1] @mem1.v:369
+(Not(iHit0==1)) (Not(ReadLabel==0)) (Not(iHit1==1)) (iDataRamMuxOut==0) (Not(iHit3==1)) (Not(iHit2==1))  =>  H <: iDataRamMuxOut     ; iDataRamMuxOut = 0 @mem1.v:369
+(MRST==1)  =>  L <: H     ; CPU.numLoads <= 0 @mem1.v:306
+(MRST==1)  =>  L <: H     ; CPU.numStores <= 0 @mem1.v:307
+ H <: H     ; CPU.numLoads <= (CPU.numLoads)+(1) @mem1.v:311
+ H <: H     ; CPU.numStores <= (CPU.numStores)+(1) @mem1.v:314
+(MRST==1) (pcInhibit==0)  =>  L <: pcInhibit     ; pcInhibit <= 0 @mem1.v:333
+(Not(MRST==1)) (pcInhibit==pipeInhibit)  =>  pipeInhibit <: pcInhibit     ; pcInhibit <= pipeInhibit @mem1.v:336

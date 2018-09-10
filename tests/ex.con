@@ -1,0 +1,46 @@
+; assertions to be verified
+PTask ignored
+PTask ignored
+ I2 <: UseImm     ; UseImm = ((((((((((((((((I2[31:26]==35)|(I2[31:26]==43))|(I2[31:26]==36))|(I2[31:26]==32))|(I2[31:26]==37))|(I2[31:26]==33))|(I2[31:26]==41))|(I2[31:26]==40))|(I2[31:26]==8))|(I2[31:26]==9))|(I2[31:26]==10))|(I2[31:26]==11))|(I2[31:26]==12))|(I2[31:26]==13))|(I2[31:26]==14))|(I2[31:26]==15))|(And (I2[31:26]==0 , ((I2[5:0]==0)|(I2[5:0]==2))|(I2[5:0]==3))) @ex.v:48
+(ALUsel==1)  =>  I2 <: ALUsel     ; ALUsel = 1 @ex.v:64
+(ALUsel==1)  =>  I2 <: ALUsel     ; ALUsel = 1 @ex.v:65
+(ALUsel==33)  =>  I2 <: ALUsel     ; ALUsel = 33 @ex.v:66
+(ALUsel==33)  =>  I2 <: ALUsel     ; ALUsel = 33 @ex.v:67
+(ALUsel==96)  =>  I2 <: ALUsel     ; ALUsel = 96 @ex.v:68
+(ALUsel==64)  =>  I2 <: ALUsel     ; ALUsel = 64 @ex.v:69
+(ALUsel==2)  =>  I2 <: ALUsel     ; ALUsel = 2 @ex.v:70
+(ALUsel==8)  =>  I2 <: ALUsel     ; ALUsel = 8 @ex.v:71
+(ALUsel==4)  =>  I2 <: ALUsel     ; ALUsel = 4 @ex.v:72
+(ALUsel==16)  =>  I2 <: ALUsel     ; ALUsel = 16 @ex.v:73
+(ALUsel==130)  =>  I2 <: ALUsel     ; ALUsel = 130 @ex.v:74
+(ALUsel==129)  =>  I2 <: ALUsel     ; ALUsel = 129 @ex.v:75
+(ALUsel==132)  =>  I2 <: ALUsel     ; ALUsel = 132 @ex.v:76
+(ALUsel==132)  =>  I2 <: ALUsel     ; ALUsel = 132 @ex.v:77
+(ALUsel==130)  =>  I2 <: ALUsel     ; ALUsel = 130 @ex.v:78
+(ALUsel==129)  =>  I2 <: ALUsel     ; ALUsel = 129 @ex.v:79
+(ALUsel==1)  =>  I2 <: ALUsel     ; ALUsel = 1 @ex.v:81
+(ALUsel==1)  =>  I2 <: ALUsel     ; ALUsel = 1 @ex.v:82
+(ALUsel==96)  =>  I2 <: ALUsel     ; ALUsel = 96 @ex.v:83
+(ALUsel==64)  =>  I2 <: ALUsel     ; ALUsel = 64 @ex.v:84
+(ALUsel==2)  =>  I2 <: ALUsel     ; ALUsel = 2 @ex.v:85
+(ALUsel==8)  =>  I2 <: ALUsel     ; ALUsel = 8 @ex.v:86
+(ALUsel==4)  =>  I2 <: ALUsel     ; ALUsel = 4 @ex.v:87
+(ALUsel==8)  =>  I2 <: ALUsel     ; ALUsel = 8 @ex.v:89
+(ALUsel==1)  =>  I2 <: ALUsel     ; ALUsel = 1 @ex.v:91
+(ALUsel==1)  =>  I2 <: ALUsel     ; ALUsel = 1 @ex.v:92
+(ALUsel==1)  =>  I2 <: ALUsel     ; ALUsel = 1 @ex.v:93
+(ALUsel==1)  =>  I2 <: ALUsel     ; ALUsel = 1 @ex.v:94
+(ALUsel==1)  =>  I2 <: ALUsel     ; ALUsel = 1 @ex.v:95
+(ALUsel==1)  =>  I2 <: ALUsel     ; ALUsel = 1 @ex.v:96
+(ALUsel==1)  =>  I2 <: ALUsel     ; ALUsel = 1 @ex.v:97
+(ALUsel==1)  =>  I2 <: ALUsel     ; ALUsel = 1 @ex.v:98
+(ALUsel==-1)  =>  I2 <: ALUsel     ; ALUsel = -1 @ex.v:100
+(QCsel==2)  =>  I2 <: QCsel     ; QCsel = 2 @ex.v:110
+(QCsel==1)  =>  I2 <: QCsel     ; QCsel = 1 @ex.v:111
+(QCsel==4)  =>  I2 <: QCsel     ; QCsel = 4 @ex.v:112
+(QCsel==8)  =>  I2 <: QCsel     ; QCsel = 8 @ex.v:113
+(QCsel==32)  =>  I2 <: QCsel     ; QCsel = 32 @ex.v:114
+(QCsel==16)  =>  I2 <: QCsel     ; QCsel = 16 @ex.v:115
+(QCsel==16)  =>  I2 <: QCsel     ; QCsel = 16 @ex.v:116
+(QCsel==32)  =>  I2 <: QCsel     ; QCsel = 32 @ex.v:117
+(QCsel==-1)  =>  I2 <: QCsel     ; QCsel = -1 @ex.v:118

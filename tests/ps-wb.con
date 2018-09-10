@@ -1,0 +1,11 @@
+; assertions to be verified
+ I4 <: WBsel     ; WBsel = 5 @wb.v:23
+ I4 <: WBsel     ; WBsel = 5 @wb.v:24
+ I4 <: WBsel     ; WBsel = 5 @wb.v:25
+ I4 <: WBsel     ; WBsel = 5 @wb.v:26
+ I4 <: WBsel     ; WBsel = 5 @wb.v:27
+ I4 <: WBsel     ; WBsel = 3 @wb.v:30
+ I4 <: WBsel     ; WBsel = 3 @wb.v:31
+ I4 <: WBsel     ; WBsel = 3 @wb.v:32
+ I4 <: WBsel     ; WBsel = 3 @wb.v:33
+ I4 <: WBsel     ; WBsel = 6 @wb.v:36

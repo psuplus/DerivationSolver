@@ -1,0 +1,88 @@
+; assertions to be verified
+ (join dStall iStall) <: pipeInhibit     ; assign pipeInhibit = (dStall)|(iStall) @mem7.v:329
+ (join iDataRamMuxOut iStall) <: Iin     ; Iin = iDataRamMuxOut @mem7.v:341
+ iStall <: Iin     ; Iin = 0 @mem7.v:341
+(isLoad==1)  =>  H <: H     ; cacheOut = dDataRamMuxOut @mem7.v:344
+(Not(isLoad==1))  =>  isLoad <: H     ; cacheOut = 0 @mem7.v:344
+(BusSel==1)  =>  (join dMemRead BusSel) <: Read     ; Read = dMemRead @mem7.v:466
+(Not(BusSel==1))  =>  (join iMemRead BusSel) <: Read     ; Read = iMemRead @mem7.v:466
+ dMemWrite <: Write     ; assign Write = dMemWrite @mem7.v:467
+(BusSel==1)  =>  (join dMemAddr BusSel) <: Addr     ; Addr = dMemAddr @mem7.v:468
+(Not(BusSel==1))  =>  (join iMemAddr BusSel) <: Addr     ; Addr = iMemAddr @mem7.v:468
+(Write==0) (Write==1)  =>  H <: L     ; Bus = dMemBus @mem7.v:469
+(Write==1) (Write==1)  =>  H <: H     ; Bus = dMemBus @mem7.v:469
+(Write==0) (Not(Write==1))  =>  Write <: L     ; Bus = 0 @mem7.v:469
+(Write==1) (Not(Write==1))  =>  Write <: H     ; Bus = 0 @mem7.v:469
+(BusSel==1)  =>  BusSel <: iMemValid     ; iMemValid = 0 @mem7.v:471
+(Not(BusSel==1))  =>  (join Valid BusSel) <: iMemValid     ; iMemValid = Valid @mem7.v:471
+(BusSel==1)  =>  (join Valid BusSel) <: dMemValid     ; dMemValid = Valid @mem7.v:472
+(Not(BusSel==1))  =>  BusSel <: dMemValid     ; dMemValid = 0 @mem7.v:472
+(MRST==1)  =>  L <: H     ; CPU.numLoads <= 0 @mem7.v:306
+(MRST==1)  =>  L <: H     ; CPU.numStores <= 0 @mem7.v:307
+ H <: H     ; CPU.numLoads <= (CPU.numLoads)+(1) @mem7.v:311
+ H <: H     ; CPU.numStores <= (CPU.numStores)+(1) @mem7.v:314
+(MRST==1)  =>  L <: pcInhibit     ; pcInhibit <= 0 @mem7.v:333
+(Not(MRST==1))  =>  pipeInhibit <: pcInhibit     ; pcInhibit <= pipeInhibit @mem7.v:336
+(MRST==1)  =>  L <: dFsmState     ; no-sensitive-upgrade check dFsmState <= IFSM_IDLE @mem7.v:356
+(MRST==1)  =>  L <: dFsmState     ; dFsmState <= IFSM_IDLE @mem7.v:356
+(MRST==1)  =>  L <: dTagRamWe     ; no-sensitive-upgrade check dTagRamWe <= 0 @mem7.v:359
+(MRST==1)  =>  L <: dTagRamWe     ; dTagRamWe <= 0 @mem7.v:359
+(dStateWay==2) (MRST==1)  =>  L <: H     ; dStateRamWe <= 0 @mem7.v:360
+(dStateWay==3) (MRST==1)  =>  L <: H     ; dStateRamWe <= 0 @mem7.v:360
+(dStateWay==0) (MRST==1)  =>  L <: L     ; dStateRamWe <= 0 @mem7.v:360
+(dStateWay==1) (MRST==1)  =>  L <: L     ; dStateRamWe <= 0 @mem7.v:360
+(dStateWay==2) (MRST==1)  =>  L <: H     ; dStateRamIn <= 0 @mem7.v:361
+(dStateWay==3) (MRST==1)  =>  L <: H     ; dStateRamIn <= 0 @mem7.v:361
+(dStateWay==0) (MRST==1)  =>  L <: L     ; dStateRamIn <= 0 @mem7.v:361
+(dStateWay==1) (MRST==1)  =>  L <: L     ; dStateRamIn <= 0 @mem7.v:361
+(MRST==1)  =>  L <: dDataRamWe     ; no-sensitive-upgrade check dDataRamWe <= 0 @mem7.v:362
+(MRST==1)  =>  L <: dDataRamWe     ; dDataRamWe <= 0 @mem7.v:362
+(MRST==1)  =>  L <: dOffset     ; no-sensitive-upgrade check dOffset <= {3{0}} @mem7.v:363
+(MRST==1)  =>  L <: dOffset     ; dOffset <= {3{0}} @mem7.v:363
+(MRST==1)  =>  L <: H     ; dDataRamIn <= 0 @mem7.v:364
+(MRST==1)  =>  L <: dMemRead     ; no-sensitive-upgrade check dMemRead <= 0 @mem7.v:367
+(MRST==1)  =>  L <: dMemRead     ; dMemRead <= 0 @mem7.v:367
+(MRST==1)  =>  L <: dMemWrite     ; no-sensitive-upgrade check dMemWrite <= 0 @mem7.v:368
+(MRST==1)  =>  L <: dMemWrite     ; dMemWrite <= 0 @mem7.v:368
+(MRST==1)  =>  L <: dMemAddr     ; no-sensitive-upgrade check dMemAddr <= 0 @mem7.v:369
+(MRST==1)  =>  L <: dMemAddr     ; dMemAddr <= 0 @mem7.v:369
+(MRST==1)  =>  L <: BusSel     ; no-sensitive-upgrade check BusSel <= 0 @mem7.v:372
+(MRST==1)  =>  L <: BusSel     ; BusSel <= 0 @mem7.v:372
+(MRST==1)  =>  L <: H     ; CPU.numDMisses <= 0 @mem7.v:376
+(Not(MRST==1)) (And (Or ( (isLoad == 1) ,  (isStore == 1)) ,  (iHit == 1))) (dFsmState==DFSM_IDLE) (Or (dReadWay==0 , dReadWay==1))  =>  (join dReadWay (join (join (join (join isLoad isStore) dHit) iHit) dFsmState)) <: BusSel     ; no-sensitive-upgrade check BusSel <= 1 @mem7.v:388
+(Not(MRST==1)) (And (Or ( (isLoad == 1) ,  (isStore == 1)) ,  (iHit == 1))) (dFsmState==DFSM_IDLE) (Or (dReadWay==0 , dReadWay==1))  =>  (join dReadWay (join (join (join (join isLoad isStore) dHit) iHit) dFsmState)) <: BusSel     ; BusSel <= 1 @mem7.v:388
+(Not(MRST==1)) (And (Or ( (isLoad == 1) ,  (isStore == 1)) ,  (iHit == 1))) (dFsmState==DFSM_IDLE) (Or (dReadWay==0 , dReadWay==1))  =>  (join dStateRamOutLow (join dReadWay (join (join (join (join isLoad isStore) dHit) iHit) dFsmState))) <: dFsmState     ; no-sensitive-upgrade check dFsmState <= DFSM_WRITEBACK @mem7.v:390
+(Not(MRST==1)) (And (Or ( (isLoad == 1) ,  (isStore == 1)) ,  (iHit == 1))) (dFsmState==DFSM_IDLE) (Or (dReadWay==0 , dReadWay==1))  =>  (join dStateRamOutLow (join dReadWay (join (join (join (join isLoad isStore) dHit) iHit) dFsmState))) <: dFsmState     ; dFsmState <= DFSM_WRITEBACK @mem7.v:390
+(Not(MRST==1)) (And (Or ( (isLoad == 1) ,  (isStore == 1)) ,  (iHit == 1))) (dFsmState==DFSM_IDLE) (Or (dReadWay==0 , dReadWay==1))  =>  (join dStateRamOutLow (join dReadWay (join (join (join (join isLoad isStore) dHit) iHit) dFsmState))) <: dMemWrite     ; no-sensitive-upgrade check dMemWrite <= 1 @mem7.v:393
+(Not(MRST==1)) (And (Or ( (isLoad == 1) ,  (isStore == 1)) ,  (iHit == 1))) (dFsmState==DFSM_IDLE) (Or (dReadWay==0 , dReadWay==1))  =>  (join dStateRamOutLow (join dReadWay (join (join (join (join isLoad isStore) dHit) iHit) dFsmState))) <: dMemWrite     ; dMemWrite <= 1 @mem7.v:393
+(Not(MRST==1)) (And (Or ( (isLoad == 1) ,  (isStore == 1)) ,  (iHit == 1))) (dFsmState==DFSM_IDLE) (Or (dReadWay==0 , dReadWay==1))  =>  (join dStateRamOutLow (join dReadWay (join (join (join (join isLoad isStore) dHit) iHit) dFsmState))) <: dMemAddr     ; no-sensitive-upgrade check dMemAddr <= {dTagRamOutLow[dReadWay[0]], MAR[12:5], dOffset[(3)-(1):0], 0} @mem7.v:394
+(Not(MRST==1)) (And (Or ( (isLoad == 1) ,  (isStore == 1)) ,  (iHit == 1))) (dFsmState==DFSM_IDLE) (Or (dReadWay==0 , dReadWay==1))  =>  (join dStateRamOutLow (join dReadWay (join (join (join (join isLoad isStore) dHit) iHit) dFsmState))) <: dMemAddr     ; dMemAddr <= {dTagRamOutLow[dReadWay[0]], MAR[12:5], dOffset[(3)-(1):0], 0} @mem7.v:394
+(Not(MRST==1)) (And (Or ( (isLoad == 1) ,  (isStore == 1)) ,  (iHit == 1))) (dFsmState==DFSM_IDLE) (iHit==1) (Or (dReadWay==0 , dReadWay==1))  =>  (join iHit (join dStateRamOutLow (join dReadWay (join (join (join (join isLoad isStore) dHit) iHit) dFsmState)))) <: dFsmState     ; no-sensitive-upgrade check dFsmState <= DFSM_WAITMEM @mem7.v:397
+(Not(MRST==1)) (And (Or ( (isLoad == 1) ,  (isStore == 1)) ,  (iHit == 1))) (dFsmState==DFSM_IDLE) (iHit==1) (Or (dReadWay==0 , dReadWay==1))  =>  (join iHit (join dStateRamOutLow (join dReadWay (join (join (join (join isLoad isStore) dHit) iHit) dFsmState)))) <: dFsmState     ; dFsmState <= DFSM_WAITMEM @mem7.v:397
+(Not(MRST==1)) (And (Or ( (isLoad == 1) ,  (isStore == 1)) ,  (iHit == 1))) (dFsmState==DFSM_IDLE) (iHit==1) (Or (dReadWay==0 , dReadWay==1))  =>  (join iHit (join dStateRamOutLow (join dReadWay (join (join (join (join isLoad isStore) dHit) iHit) dFsmState)))) <: dMemRead     ; no-sensitive-upgrade check dMemRead <= 1 @mem7.v:400
+(Not(MRST==1)) (And (Or ( (isLoad == 1) ,  (isStore == 1)) ,  (iHit == 1))) (dFsmState==DFSM_IDLE) (iHit==1) (Or (dReadWay==0 , dReadWay==1))  =>  (join iHit (join dStateRamOutLow (join dReadWay (join (join (join (join isLoad isStore) dHit) iHit) dFsmState)))) <: dMemRead     ; dMemRead <= 1 @mem7.v:400
+(Not(MRST==1)) (And (Or ( (isLoad == 1) ,  (isStore == 1)) ,  (iHit == 1))) (dFsmState==DFSM_IDLE) (iHit==1) (Or (dReadWay==0 , dReadWay==1))  =>  (join iHit (join dStateRamOutLow (join dReadWay (join (join (join (join isLoad isStore) dHit) iHit) dFsmState)))) <: dMemAddr     ; no-sensitive-upgrade check dMemAddr <= MAR @mem7.v:401
+(Not(MRST==1)) (And (Or ( (isLoad == 1) ,  (isStore == 1)) ,  (iHit == 1))) (dFsmState==DFSM_IDLE) (iHit==1) (Or (dReadWay==0 , dReadWay==1))  =>  (join iHit (join dStateRamOutLow (join dReadWay (join (join (join (join isLoad isStore) dHit) iHit) dFsmState)))) <: dMemAddr     ; dMemAddr <= MAR @mem7.v:401
+(Not(MRST==1)) (And (Or ( (isLoad == 1) ,  (isStore == 1)) ,  (iHit == 1))) (dFsmState==DFSM_IDLE) (iHit==1) (Or (dReadWay==0 , dReadWay==1))  =>  H <: H     ; CPU.numDMisses <= (CPU.numDMisses)+(1) @mem7.v:405
+(Not(MRST==1)) (And (Or ( (isLoad == 1) ,  (isStore == 1)) ,  (iHit == 1))) (dFsmState==DFSM_IDLE) (Not(Or (dReadWay==0 , dReadWay==1))) (ReadLabel==1)  =>  (join ReadLabel (join dReadWay (join (join (join (join isLoad isStore) dHit) iHit) dFsmState))) <: BusSel     ; no-sensitive-upgrade check BusSel <= 1 @mem7.v:410
+(Not(MRST==1)) (And (Or ( (isLoad == 1) ,  (isStore == 1)) ,  (iHit == 1))) (dFsmState==DFSM_IDLE) (Not(Or (dReadWay==0 , dReadWay==1))) (ReadLabel==1)  =>  (join ReadLabel (join dReadWay (join (join (join (join isLoad isStore) dHit) iHit) dFsmState))) <: BusSel     ; BusSel <= 1 @mem7.v:410
+(Not(MRST==1)) (And (Or ( (isLoad == 1) ,  (isStore == 1)) ,  (iHit == 1))) (dFsmState==DFSM_IDLE) (Not(Or (dReadWay==0 , dReadWay==1))) (ReadLabel==1)  =>  H <: dFsmState     ; no-sensitive-upgrade check dFsmState <= DFSM_WRITEBACK @mem7.v:413
+(Not(MRST==1)) (And (Or ( (isLoad == 1) ,  (isStore == 1)) ,  (iHit == 1))) (dFsmState==DFSM_IDLE) (Not(Or (dReadWay==0 , dReadWay==1))) (ReadLabel==1)  =>  H <: dFsmState     ; dFsmState <= DFSM_WRITEBACK @mem7.v:413
+(Not(MRST==1)) (And (Or ( (isLoad == 1) ,  (isStore == 1)) ,  (iHit == 1))) (dFsmState==DFSM_IDLE) (Not(Or (dReadWay==0 , dReadWay==1))) (ReadLabel==1)  =>  H <: dMemWrite     ; no-sensitive-upgrade check dMemWrite <= 1 @mem7.v:416
+(Not(MRST==1)) (And (Or ( (isLoad == 1) ,  (isStore == 1)) ,  (iHit == 1))) (dFsmState==DFSM_IDLE) (Not(Or (dReadWay==0 , dReadWay==1))) (ReadLabel==1)  =>  H <: dMemWrite     ; dMemWrite <= 1 @mem7.v:416
+(Not(MRST==1)) (And (Or ( (isLoad == 1) ,  (isStore == 1)) ,  (iHit == 1))) (dFsmState==DFSM_IDLE) (Not(Or (dReadWay==0 , dReadWay==1))) (ReadLabel==1)  =>  H <: dMemAddr     ; no-sensitive-upgrade check dMemAddr <= {dTagRamOutHigh[dReadWay[0]], MAR[12:5], dOffset[(3)-(1):0], 0} @mem7.v:417
+(Not(MRST==1)) (And (Or ( (isLoad == 1) ,  (isStore == 1)) ,  (iHit == 1))) (dFsmState==DFSM_IDLE) (Not(Or (dReadWay==0 , dReadWay==1))) (ReadLabel==1)  =>  H <: dMemAddr     ; dMemAddr <= {dTagRamOutHigh[dReadWay[0]], MAR[12:5], dOffset[(3)-(1):0], 0} @mem7.v:417
+(iHit==1) (Not(MRST==1)) (And (Or ( (isLoad == 1) ,  (isStore == 1)) ,  (iHit == 1))) (dFsmState==DFSM_IDLE) (Not(Or (dReadWay==0 , dReadWay==1))) (ReadLabel==1)  =>  H <: dFsmState     ; no-sensitive-upgrade check dFsmState <= DFSM_WAITMEM @mem7.v:420
+(iHit==1) (Not(MRST==1)) (And (Or ( (isLoad == 1) ,  (isStore == 1)) ,  (iHit == 1))) (dFsmState==DFSM_IDLE) (Not(Or (dReadWay==0 , dReadWay==1))) (ReadLabel==1)  =>  H <: dFsmState     ; dFsmState <= DFSM_WAITMEM @mem7.v:420
+(iHit==1) (Not(MRST==1)) (And (Or ( (isLoad == 1) ,  (isStore == 1)) ,  (iHit == 1))) (dFsmState==DFSM_IDLE) (Not(Or (dReadWay==0 , dReadWay==1))) (ReadLabel==1)  =>  H <: dMemRead     ; no-sensitive-upgrade check dMemRead <= 1 @mem7.v:423
+(iHit==1) (Not(MRST==1)) (And (Or ( (isLoad == 1) ,  (isStore == 1)) ,  (iHit == 1))) (dFsmState==DFSM_IDLE) (Not(Or (dReadWay==0 , dReadWay==1))) (ReadLabel==1)  =>  H <: dMemRead     ; dMemRead <= 1 @mem7.v:423
+(iHit==1) (Not(MRST==1)) (And (Or ( (isLoad == 1) ,  (isStore == 1)) ,  (iHit == 1))) (dFsmState==DFSM_IDLE) (Not(Or (dReadWay==0 , dReadWay==1))) (ReadLabel==1)  =>  H <: dMemAddr     ; no-sensitive-upgrade check dMemAddr <= MAR @mem7.v:424
+(iHit==1) (Not(MRST==1)) (And (Or ( (isLoad == 1) ,  (isStore == 1)) ,  (iHit == 1))) (dFsmState==DFSM_IDLE) (Not(Or (dReadWay==0 , dReadWay==1))) (ReadLabel==1)  =>  H <: dMemAddr     ; dMemAddr <= MAR @mem7.v:424
+(iHit==1) (Not(MRST==1)) (And (Or ( (isLoad == 1) ,  (isStore == 1)) ,  (iHit == 1))) (dFsmState==DFSM_IDLE) (Not(Or (dReadWay==0 , dReadWay==1))) (ReadLabel==1)  =>  H <: H     ; CPU.numDMisses <= (CPU.numDMisses)+(1) @mem7.v:428
+(And ( (isStore == 1) ,  (dHit == 1))) (Not(MRST==1)) (dFsmState==DFSM_IDLE)  =>  (join (join isStore dHit) (join (join (join (join isLoad isStore) dHit) iHit) dFsmState)) <: dFsmState     ; no-sensitive-upgrade check dFsmState <= DFSM_STOREHIT @mem7.v:436
+(And ( (isStore == 1) ,  (dHit == 1))) (Not(MRST==1)) (dFsmState==DFSM_IDLE)  =>  (join (join isStore dHit) (join (join (join (join isLoad isStore) dHit) iHit) dFsmState)) <: dFsmState     ; dFsmState <= DFSM_STOREHIT @mem7.v:436
+(And ( (isStore == 1) ,  (dHit == 1))) (Not(MRST==1)) (dFsmState==DFSM_IDLE)  =>  (join (join isStore dHit) (join (join (join (join isLoad isStore) dHit) iHit) dFsmState)) <: dDataRamWe     ; no-sensitive-upgrade check dDataRamWe <= 1 @mem7.v:439
+(And ( (isStore == 1) ,  (dHit == 1))) (Not(MRST==1)) (dFsmState==DFSM_IDLE)  =>  (join (join isStore dHit) (join (join (join (join isLoad isStore) dHit) iHit) dFsmState)) <: dDataRamWe     ; dDataRamWe <= 1 @mem7.v:439
+(And ( (isStore == 1) ,  (dHit == 1))) (Dsize==2) (Not(MRST==1)) (dFsmState==DFSM_IDLE)  =>  (join SMDR (join Dsize (join (join isStore dHit) (join (join (join (join isLoad isStore) dHit) iHit) dFsmState)))) <: H     ; dDataRamIn <= SMDR @mem7.v:442
+(And ( (isStore == 1) ,  (dHit == 1))) (Dsize==1) (Not(Dsize==2)) (Not(MRST==1)) (dFsmState==DFSM_IDLE)  =>  H <: H     ; dDataRamIn <= ((dDataRamMuxOut)&(~(mask)))|(((SMDR)&(65535))<<(sa)) @mem7.v:445
+(And ( (isStore == 1) ,  (dHit == 1))) (Not(Dsize==1)) (Not(Dsize==2)) (Dsize==0) (Not(MRST==1)) (dFsmState==DFSM_IDLE)  =>  H <: H     ; dDataRamIn <= ((dDataRamMuxOut)&(~(mask)))|(((SMDR)&(255))<<(sa)) @mem7.v:448

@@ -1,0 +1,35 @@
+; assertions to be verified
+(takeBranch==1)  =>  (join I2 QC) <: takeBranch     ; takeBranch = 1 @if.v:52
+(takeBranch==1)  =>  (join I2 QC) <: takeBranch     ; takeBranch = 1 @if.v:53
+(takeBranch==1)  =>  (join I2 QC) <: takeBranch     ; takeBranch = 1 @if.v:54
+(takeBranch==1)  =>  (join I2 QC) <: takeBranch     ; takeBranch = 1 @if.v:55
+(takeBranch==1)  =>  (join I2 QC) <: takeBranch     ; takeBranch = 1 @if.v:56
+(takeBranch==1)  =>  (join I2 QC) <: takeBranch     ; takeBranch = 1 @if.v:57
+(takeBranch==1)  =>  (join I2 QC) <: takeBranch     ; takeBranch = 1 @if.v:58
+(takeBranch==1)  =>  (join I2 QC) <: takeBranch     ; takeBranch = 1 @if.v:59
+(takeBranch==0)  =>  (join I2 QC) <: takeBranch     ; takeBranch = 0 @if.v:60
+(PCsel==27)  =>  (join I2 takeBranch) <: PCsel     ; PCsel = 27 @if.v:73
+(PCsel==27)  =>  (join I2 takeBranch) <: PCsel     ; PCsel = 27 @if.v:74
+(PCsel==15)  =>  (join I2 takeBranch) <: PCsel     ; PCsel = 15 @if.v:77
+(PCsel==15)  =>  (join I2 takeBranch) <: PCsel     ; PCsel = 15 @if.v:78
+(PCsel==29)  =>  (join I2 takeBranch) <: PCsel     ; PCsel = 29 @if.v:81
+(PCsel==29)  =>  (join I2 takeBranch) <: PCsel     ; PCsel = 29 @if.v:82
+(PCsel==29)  =>  (join I2 takeBranch) <: PCsel     ; PCsel = 29 @if.v:83
+(PCsel==29)  =>  (join I2 takeBranch) <: PCsel     ; PCsel = 29 @if.v:84
+(PCsel==29)  =>  (join I2 takeBranch) <: PCsel     ; PCsel = 29 @if.v:85
+(PCsel==29)  =>  (join I2 takeBranch) <: PCsel     ; PCsel = 29 @if.v:86
+(PCsel==29)  =>  (join I2 takeBranch) <: PCsel     ; PCsel = 29 @if.v:88
+(PCsel==29)  =>  (join I2 takeBranch) <: PCsel     ; PCsel = 29 @if.v:89
+(PCsel==30)  =>  (join I2 takeBranch) <: PCsel     ; PCsel = 30 @if.v:93
+ I2 <: PCjump     ; PCjump = I2[25:0] @if.v:104
+ I2 <: PCjump     ; PCjump = I2[25:0] @if.v:105
+(PCjump==-1)  =>  I2 <: PCjump     ; PCjump = -1 @if.v:106
+ I2 <: PCoffset     ; PCoffset = {{14{I2[15]}}, I2[15:0], 0} @if.v:111
+ I2 <: PCoffset     ; PCoffset = {{14{I2[15]}}, I2[15:0], 0} @if.v:112
+ I2 <: PCoffset     ; PCoffset = {{14{I2[15]}}, I2[15:0], 0} @if.v:113
+ I2 <: PCoffset     ; PCoffset = {{14{I2[15]}}, I2[15:0], 0} @if.v:114
+ I2 <: PCoffset     ; PCoffset = {{14{I2[15]}}, I2[15:0], 0} @if.v:115
+ I2 <: PCoffset     ; PCoffset = {{14{I2[15]}}, I2[15:0], 0} @if.v:116
+ I2 <: PCoffset     ; PCoffset = {{14{I2[15]}}, I2[15:0], 0} @if.v:117
+ I2 <: PCoffset     ; PCoffset = {{14{I2[15]}}, I2[15:0], 0} @if.v:118
+(PCoffset==-1)  =>  I2 <: PCoffset     ; PCoffset = -1 @if.v:119

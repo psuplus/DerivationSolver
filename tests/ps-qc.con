@@ -1,0 +1,8 @@
+; assertions to be verified
+(QCsel==1)  =>  (join (join RSbus RTbus) (join QCsel (join (join RSbus RTbus) QCsel))) <: Result     ; Result = Not( RSbus==RTbus) @qc.v:44
+(QCsel==2)  =>  (join (join RSbus RTbus) (join QCsel (join (join RSbus RTbus) QCsel))) <: Result     ; Result = RSbus==RTbus @qc.v:45
+(QCsel==4)  =>  (join RSbus (join QCsel (join (join RSbus RTbus) QCsel))) <: Result     ; Result = (RSbus[31]==1)|(RSbus==0) @qc.v:46
+(QCsel==8)  =>  (join RSbus (join QCsel (join (join RSbus RTbus) QCsel))) <: Result     ; Result = (RSbus[31]==0)&(Not( RSbus==0)) @qc.v:47
+(QCsel==16)  =>  (join RSbus (join QCsel (join (join RSbus RTbus) QCsel))) <: Result     ; Result = RSbus[31]==0 @qc.v:48
+(QCsel==32)  =>  (join RSbus (join QCsel (join (join RSbus RTbus) QCsel))) <: Result     ; Result = RSbus[31]==1 @qc.v:49
+ (join QCsel (join (join RSbus RTbus) QCsel)) <: Result     ; Result = -1 @qc.v:50
