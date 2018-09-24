@@ -1,10 +1,30 @@
 Derivation Solver 
 
-This package provides implementation of derivation solvers for dependent type 
-inference. It consists of four constraint solvers, i.e., one-shot, 
+
+# License Notice
+****************************
+Derivation Solver provides implementation of derivation solvers for dependent 
+type inference. It consists of four constraint solvers, i.e., one-shot, 
 early-accept, early-reject and hybrid solver along with two partition 
 algorithms: sequential and combinational partitioning. A parser for the core 
-constraint language and plotting scripts are also available in the package. 
+constraint language and plotting scripts are also available in the package.
+
+Copyright (C) 2018  Peixuan Li
+
+Derivation Solver is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Derivation Solver is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+
 
 # Dependency
 ****************************
@@ -152,10 +172,10 @@ init_partt(): specify the initialization of partition algorithm
 next_partt(): how to generate the next partition. self.stop.partt: keep track 
 of stop condition
 
-In this example, uncomment the line 130-160 in partt.py. 
+In this example, uncomment the line 148-178 in partt.py. 
 
 2. Specify the new options for the extensions.
-Uncomment the Line 6, 11 in globals.py and Line 145,146 in test_solver.py. 
+Uncomment the Line 24, 29 in globals.py and Line 163,164 in test_solver.py. 
 
 3. Now user can run the new implementation using:
 

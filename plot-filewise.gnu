@@ -1,3 +1,21 @@
+#     This file is part of Derivation Solver. Derivation Solver provides
+#     implementation of derivation solvers for dependent type inference.
+# 
+#     Copyright (C) 2018  Peixuan Li
+# 
+#     Derivation Solver is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     Derivation Solver is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
+# 
 set key tmargin horiz font ",12"
 set term postscript color #font "Times New Roman"
 set output "result/performance-file.eps"
