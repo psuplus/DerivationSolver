@@ -86,7 +86,7 @@ The current implementation provides multiple levels of reuse for future needs.
 ### Tuning running parameters.
 The complete usage of the code is as follow:
 ```
-usage: main.py [-h] [-f FILE] [-partt PARTITION [PARTITION ...]] [-appr APPROACH [APPROACH ...]] [-t TIMEOUT]
+usage: solver.py [-h] [-f FILE] [-partt PARTITION [PARTITION ...]] [-appr APPROACH [APPROACH ...]] [-t TIMEOUT]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -101,12 +101,12 @@ optional arguments:
 
 Example 1: run tests/dsram.con using hybrid solver with sequential partitioning:
 ```
-$ ./main.py -f dsram.con -partt seq -appr hybrid
+$ ./solver.py -f dsram.con -partt seq -appr hybrid
 ```
 
 Example 2: run all tests file using early-accept with 1 min time-out
 ```
-$ ./main.py -f all -appr early-accept -t 1
+$ ./solver.py -f all -appr early-accept -t 1
 ```
 
 ### New constraint files.
@@ -155,11 +155,11 @@ of stop condition
     In this example, uncomment the line 130-160 in [partt.py](./partt.py). 
 
 1. Specify the new options for the extensions.
-Uncomment the Line 6, 11 in [globals.py](./globals.py) and Line 81,82 in [main.py](./main.py). 
+Uncomment the Line 6, 11 in [globals.py](./globals.py) and Line 81,82 in [solver.py](./solver.py). 
 
 3. Now user can run the new implementation using:
     ```
-    $ ./main.py -f dsram.con -partt opcomb
+    $ ./solver.py -f dsram.con -partt opcomb
     ```
     "OpCombinationPartition" will show up in the debug message to indicate the new implementation is in use.
 
