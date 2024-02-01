@@ -1,42 +1,104 @@
-#     This file is part of Derivation Solver. Derivation Solver provides
-#     implementation of derivation solvers for dependent type inference.
-# 
-#     Copyright (C) 2018  Peixuan Li
-# 
-#     Derivation Solver is free software: you can redistribute it and/or modify
-#     it under the terms of the GNU General Public License as published by
-#     the Free Software Foundation, either version 3 of the License, or
-#     (at your option) any later version.
-#
-#     Derivation Solver is distributed in the hope that it will be useful,
-#     but WITHOUT ANY WARRANTY; without even the implied warranty of
-#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#     GNU General Public License for more details.
-#
-#     You should have received a copy of the GNU General Public License
-#     along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
-# 
 from lexer import *
-
+import copy
 
 class Expr:
-    def __init__(self, name):
+    def __init__(self, name, desc="", file="", line=""):
         self.name = name
+        self.desc = desc
+        self.file = file
+        self.line = line
 
     def __eq__(self, other):
         return isinstance(other, Expr) and self.name == other.name
 
     def __str__(self):
-        return self.name
+        return self.name + '[' + self.desc + ']'
 
 
 class Label(Expr):
+    def __init__(self, name, desc="", file="", line=""):
+        self.name = name
+        self.desc = desc
+        self.file = file
+        self.line = line
+        self.level = {}
+        self.compartment = {}
+
     def __str__(self):
         return self.name+"_LABEL_"
 
 
 class CVar(Expr):
     pass
+
+
+class RLLabel(Label):
+    def __init__(self, level={}, compartment={}):
+        Label.__init__(self, "CONST")
+        self.level = level
+        self.compartment = compartment
+
+    def __eq__(self, other):
+        return isinstance(other, RLLabel) and self.level == other.level and self.compartment == other.compartment
+
+    def __str__(self):
+        return '[' + self.level.__str__() + '][' + self.compartment.__str__() + ']'
+
+    def __hash__(self):
+        return hash(self.__str__())
+
+    def compare(self, other):
+        if self == other:
+            return 0
+        else:
+            gt = False
+            lt = False
+            for key in self.level:
+                if self.level[key] > other.level[key]:
+                    gt = True
+                elif self.level[key] < other.level[key]:
+                    lt = True
+            for key in self.compartment:
+                if len(self.compartment[key] - other.compartment[key]) > 0 and len(other.compartment[key] - self.compartment[key]) > 0:
+                    gt = True
+                    lt = True
+                elif self.compartment[key] > other.compartment[key]:
+                    gt = True
+                elif self.compartment[key] < other.compartment[key]:
+                    lt = True
+            if gt and lt:
+                return -2
+            elif gt and (not lt):
+                return 1
+            elif (not gt) and lt:
+                return -1
+            else:
+                raise Exception(
+                    'This shouldn\'t happen, it should be dealt with in the previous branch')
+
+    def parseConstString(self, str):
+        re_match = (re.compile(r"CONST\[(.*)\]\[(.*)\]")).match(str)
+        if re_match:
+            level = re_match.group(1)
+            compartment = re_match.group(2)
+            level = re.split(',', level)
+            for l in level:
+                l_match = re.compile(r"([a-zA-Z0-9]*):([0-9]*)\(.*\)").match(l)
+                self.level[l_match.group(1)] = int(l_match.group(2))
+            compartment = re.compile(
+                r"([a-zA-Z0-9]*:\{[a-zA-Z0-9,]*\})").findall(compartment)
+            for c in compartment:
+                c_match = re.compile(
+                    r"([a-zA-Z0-9]*):\{([a-zA-Z0-9,]*)\}").match(c)
+                self.compartment[c_match.group(1)] = set()
+                if (c_match.group(2) == ''):
+                    c_set = []
+                else:
+                    c_set = re.split(',', c_match.group(2))
+                for e in c_set:
+                    self.compartment[c_match.group(1)].add(e)
+        else:
+            raise Exception("Bad format!")
 
 
 class Op:
@@ -82,7 +144,9 @@ class CoreConstraintParser:
         self.init_lexer()
 
     def init_lexer(self):
-        self.lexer.add_tokens(NoneToken(), AndToken(), SubToken(), SemiToken(), VariableToken())
+        self.lexer.add_tokens(NoneToken(), DebugToken(), SquareBracketStartToken(), SquareBracketEndToken(),
+                              AndToken(), SubToken(),  DelimToken(),
+                              SemiToken(),  VariableToken(), SatToken(), IntegerToken())
 
     def generate_constraint(self, t_exp1, t_sub, t_exp2):
         if not (isinstance(t_sub, SubToken) and isinstance(t_exp1, VariableToken)
@@ -103,17 +167,56 @@ class CoreConstraintParser:
         return pconset
 
     def generate_conset(self, input_str):
-        cons = self.lexer.tokenize(input_str)
         conset = []
-        for t_exp1, t_sub, t_exp2, t_sep in (cons[i:i + 4] for i in range(0, len(cons) / 4 * 4, 4)):
-            constr = self.generate_constraint(t_exp1, t_sub, t_exp2)
-            if constr:
-                conset.append(constr)
-        i = len(cons) / 4 * 4
-        if len(cons) == i + 3:
-            constr = self.generate_constraint(cons[i], cons[i + 1], cons[i + 2])
-            if constr:
-                conset.append(constr)
+        cons = self.lexer.tokenize(input_str)
+        has_sub = False
+        for c in cons:
+            if isinstance(c, SubToken):
+                has_sub = True
+        if not has_sub:
+            return conset
+
+        idx = 0
+        consumed_exp1 = False
+        while idx != len(cons):
+            if (cons[idx].token_string in self.labels and (isinstance(cons[idx + 1], SubToken) or isinstance(cons[idx + 1], SemiToken))):
+                if not consumed_exp1:
+                    exp1 = Label('', cons[idx].token_string, '', '')
+                    consumed_exp1 = True
+                else:
+                    exp2 = Label('', cons[idx].token_string, '', '')
+                    constr = str(exp1) + '<:' + str(exp2)
+                    conset.append(constr)
+                    constr = ''
+                    consumed_exp1 = False
+                idx = idx + 1
+            elif isinstance(cons[idx], VariableToken) and isinstance(cons[idx + 1], SquareBracketStartToken):
+                addr = cons[idx].token_string
+                name = file = line = ''
+                idx = idx + 2
+                if isinstance(cons[idx], VariableToken):
+                    name = cons[idx].token_string
+                    idx = idx + 1
+                idx = idx + 1
+                if isinstance(cons[idx], VariableToken):
+                    file = cons[idx].token_string
+                    idx = idx + 1
+                idx = idx + 1
+                if isinstance(cons[idx], VariableToken):
+                    line = cons[idx].token_string
+                    idx = idx + 1
+                idx = idx + 1
+                if not consumed_exp1:
+                    exp1 = CVar(addr, name, file, line)
+                    consumed_exp1 = True
+                else:
+                    exp2 = CVar(addr, name, file, line)
+                    constr = str(exp1) + '<:' + str(exp2)
+                    conset.append(constr)
+                    constr = ''
+                    consumed_exp1 = False
+            elif isinstance(cons[idx], SubToken):
+                idx = idx + 1
         return conset
 
     def generate_predicate(self, input_str):
@@ -122,7 +225,8 @@ class CoreConstraintParser:
     def parse(self, input_str):
         input_str = self.pre_process(input_str)
 
-        constraints = [re.split(SatToken().lex_reg, c_tokens) for c_tokens in re.split(SemiToken().lex_reg, input_str)]
+        constraints = [re.split(SatToken().lex_reg, c_tokens)
+                       for c_tokens in re.split(SemiToken().lex_reg, input_str)]
 
         pconset = []
         for c in constraints:
@@ -134,7 +238,7 @@ class CoreConstraintParser:
             elif len(c) == 1:  # add True if no predicate specified
                 conset = self.generate_conset(c[0])
             if conset:
-                pconset.append(PCon(pred, conset))
+                pconset.append(PCon(pred, copy.deepcopy(conset)))
 
         # merge the same predicate cases
         pconset_op = []
@@ -181,11 +285,5 @@ def test_parser(parser, input_str):
 if __name__ == '__main__':
 
     parser = CoreConstraintParser()
-    test_parser(parser, '''True => L <: ax And az <: ax; d>0 => H <: ay; Not(d>0) => L <: ay;
-    d>0 => H<: ay; d>0=> ay<:ax; True=>ax<:L''')
-    test_parser(parser, "L <: L     ; (next_state=1)  =>  L <: next_state     ;  L <: next_state    ;")
-    test_parser(parser, "L <: L     ; (next_state=1)  =>  L <: next_state     ;  L <: next_state    ;")
-
-
-
-
+    test_parser(
+        parser, '''CE0x7fbebf10a5f0[or|include/inner.h|627] <: CE0x7fbebf10a5b0[or|include/inner.h|627] ;  [ConsDebugTag-9]  include/inner.h line 627''')

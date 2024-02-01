@@ -1,24 +1,6 @@
-#     This file is part of Derivation Solver. Derivation Solver provides
-#     implementation of derivation solvers for dependent type inference.
-# 
-#     Copyright (C) 2018  Peixuan Li
-# 
-#     Derivation Solver is free software: you can redistribute it and/or modify
-#     it under the terms of the GNU General Public License as published by
-#     the Free Software Foundation, either version 3 of the License, or
-#     (at your option) any later version.
-#
-#     Derivation Solver is distributed in the hope that it will be useful,
-#     but WITHOUT ANY WARRANTY; without even the implied warranty of
-#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#     GNU General Public License for more details.
-#
-#     You should have received a copy of the GNU General Public License
-#     along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
-# 
 import globals
 import sys
-import time
+from datetime import datetime
 
 row_deli = "\n"
 col_deli = ",\t"
@@ -45,11 +27,11 @@ def output_file_name():
 
     result_file += file_name
     for i in range(2, len(sys.argv), 2):
-        result_file += sys.argv[i]+"_"+sys.argv[i+1]
+        if sys.argv[i] != "-lattice":
+            result_file += sys.argv[i]+"_"+sys.argv[i+1]
 
     # add timestamp
-    t0 = time.localtime()
-    result_file += str(t0.tm_yday) + "_" + str(t0.tm_hour) + "_" + str(t0.tm_min) + "_" + str(t0.tm_sec)
+    result_file += datetime.now().strftime('[%Y-%m-%d-%H:%M:%S.%f]')
 
     return result_file
 

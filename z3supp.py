@@ -1,23 +1,5 @@
-#     This file is part of Derivation Solver. Derivation Solver provides
-#     implementation of derivation solvers for dependent type inference.
-# 
-#     Copyright (C) 2018  Peixuan Li
-# 
-#     Derivation Solver is free software: you can redistribute it and/or modify
-#     it under the terms of the GNU General Public License as published by
-#     the Free Software Foundation, either version 3 of the License, or
-#     (at your option) any later version.
-#
-#     Derivation Solver is distributed in the hope that it will be useful,
-#     but WITHOUT ANY WARRANTY; without even the implied warranty of
-#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#     GNU General Public License for more details.
-#
-#     You should have received a copy of the GNU General Public License
-#     along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
-# 
 from z3 import *
-from lexer import VariableToken
+from lexer import *
 import re
 import time
 
@@ -63,7 +45,7 @@ class Z3Supp:
     def __declare_vars(self, p):
         varlist = re.findall(VariableToken.lex_reg, p)
         for var in varlist:
-            if var not in self.reserved and var not in self.varset:
+            if var not in self.reserved and var not in self.varset and var != '':
                 self.varset.add(var)
                 declare = "{0} = Int(\'{0}\')".format(var)
                 # print declare
@@ -141,7 +123,8 @@ class Z3Supp:
         if len(valid) == 0:
             return "True"
         elif len(valid) == 1:
-            return valid[0]
+            # return valid[0]
+            return "True"
         else:
             result = "And(" + valid[0]
             for p in valid[1:]:

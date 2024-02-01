@@ -1,21 +1,3 @@
-#     This file is part of Derivation Solver. Derivation Solver provides
-#     implementation of derivation solvers for dependent type inference.
-# 
-#     Copyright (C) 2018  Peixuan Li
-# 
-#     Derivation Solver is free software: you can redistribute it and/or modify
-#     it under the terms of the GNU General Public License as published by
-#     the Free Software Foundation, either version 3 of the License, or
-#     (at your option) any later version.
-#
-#     Derivation Solver is distributed in the hope that it will be useful,
-#     but WITHOUT ANY WARRANTY; without even the implied warranty of
-#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#     GNU General Public License for more details.
-#
-#     You should have received a copy of the GNU General Public License
-#     along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
-# 
 from lattice import *
 from partt import *
 from rm_solver import RMSolver, pretty_rm_solution
@@ -24,7 +6,7 @@ import globals
 
 
 class PartitionDerivationSolver:
-    def __init__(self, partt=SequentialPartition(), lat=TwoPointLattice()):
+    def __init__(self, lat, partt=SequentialPartition()):
         assert isinstance(lat, Lattice)
         assert isinstance(partt, PartitionContext)
         self.lattice = lat
@@ -90,7 +72,8 @@ class PartitionDerivationSolver:
                 return False
             if globals.DEBUG:
                 print ".",
-            if self.rm.solve(self.sound_derive(pconset, predicate)):  # sound == complete, either is good
+            # sound == complete, either is good
+            if self.rm.solve(self.sound_derive(pconset, predicate)):
                 done[predicate] = self.rm.solution
             else:
                 self.unsolved = [predicate]
@@ -123,7 +106,8 @@ class PartitionDerivationSolver:
                 # early solution is found
                 self.solution = done
                 return True
-            self.partt.parttset = new_partt  # The unfinished partition is passed back to partition algorithm
+            # The unfinished partition is passed back to partition algorithm
+            self.partt.parttset = new_partt
         self.unsolved = self.partt.parttset
         return False
 
@@ -142,7 +126,7 @@ class PartitionDerivationSolver:
                 if self.time_check():
                     return False
                 if globals.DEBUG:
-                    print ".",
+                    print ".\n",
                 if self.rm.solve(self.complete_derive(pconset, predicate)):
                     done[predicate] = self.rm.solution
                     # print predicate + ": " + pretty_rm_solution_print(self.rm.solution)
@@ -180,21 +164,24 @@ class PartitionDerivationSolver:
                 # early solution found
                 self.solution = done
                 return True
-            self.partt.parttset = new_partt  # The unfinished partition is passed back to partition algorithm
+            # The unfinished partition is passed back to partition algorithm
+            self.partt.parttset = new_partt
         # If reach here: the partition algorithm does not reach an equivalent state at the last iteration
         raise PartitionNotEquivalentAtEndError
 
     def solve_constraint(self, pconset, approach=globals.EARLY_ACCETP_APPROACH):
         self.partt.z3.init_pconset(pconset)
 
-        print self.partt.__class__.__name__ + " Partition, " + globals.Approach[approach] + " Approach:"
+        print self.partt.__class__.__name__ + " Partition, " + \
+            globals.Approach[approach] + " Approach:"
 
         solve = False
         for app in globals.Approach.keys():
             if approach == app:
                 t_start = time.time()
                 self.set_stop_time(t_start + 60*globals.STOP_MIN)
-                solve = getattr(self, "solve_"+globals.Approach[app].lower())(pconset)
+                solve = getattr(
+                    self, "solve_"+globals.Approach[app].lower())(pconset)
                 self.time = time.time() - t_start
                 break
 
@@ -210,7 +197,8 @@ class PartitionDerivationSolver:
     def pretty_solution(self):
         msg = "{\n"
         for predicate in self.solution:
-            msg += "\t" + predicate + " => " + pretty_rm_solution(self.solution[predicate]) + "\n"
+            msg += "\t" + predicate + " => " + \
+                pretty_rm_solution(self.solution[predicate]) + "\n"
         msg += "}"
         return msg
 
@@ -230,4 +218,3 @@ if __name__ == '__main__':
     for i in globals.Approach.keys():
         solver.solve_constraint('''a>0=>H<:a And H<:c; a<0 => a<:L And L <: b; b>0=>H <:b; And(b<0, (d<0)) => b<:L;
             c>0=>H<:c And L<:a; c<0=>c<:L''', i)
-

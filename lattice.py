@@ -1,22 +1,14 @@
-#     This file is part of Derivation Solver. Derivation Solver provides
-#     implementation of derivation solvers for dependent type inference.
-# 
-#     Copyright (C) 2018  Peixuan Li
-# 
-#     Derivation Solver is free software: you can redistribute it and/or modify
-#     it under the terms of the GNU General Public License as published by
-#     the Free Software Foundation, either version 3 of the License, or
-#     (at your option) any later version.
-#
-#     Derivation Solver is distributed in the hope that it will be useful,
-#     but WITHOUT ANY WARRANTY; without even the implied warranty of
-#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#     GNU General Public License for more details.
-#
-#     You should have received a copy of the GNU General Public License
-#     along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
-# 
-from parser import Label
+import re
+import copy
+from itertools import chain, combinations
+from parser import Label, RLLabel
+
+
+
+def powerset(iterable):
+    "powerset([1,2,3]) --> () (1,) (2,) (3,) (1,2) (1,3) (2,3) (1,2,3)"
+    s = list(iterable)
+    return chain.from_iterable(combinations(s, r) for r in range(len(s) + 1))
 
 
 class Lattice:
@@ -70,7 +62,8 @@ class Lattice:
     def __str__(self):
         result = "Model"
         for r in self.sub:
-            result = result + ", " + str(r[0]) + "<:" + str(r[1])
+            result = result + "\n\t" + str(r[0]) + " <: " + str(r[1])
+        result = result + "\nSize of all sub: {0}".format(len(self.sub))
         return result
 
 
@@ -80,11 +73,68 @@ class TwoPointLattice(Lattice):
         self.add_sub(Label("L"), Label("H"))
 
 
+class RLLattice(Lattice):
+    def __init__(self, lattice_file=None):
+        Lattice.__init__(self)
+        self.levels = {}
+        self.compartments = {}
+        self.constants = set()
+        self.readLatticeFile(lattice_file)
+
+    def readLatticeFile(self, file):
+        if file == None:
+            self.levels = {'value': ['L', 'H']}
+        else:
+            with open(file, 'r') as f:
+                for line in f:
+                    line = re.split(' ', line.strip())
+                    if line[0] == 'C':
+                        c = set()
+                        for i in range(2, len(line)):
+                            c.add(line[i].rstrip())
+                        self.compartments[line[1]] = c
+                    elif line[0] == 'L':
+                        l = []
+                        for i in range(2, len(line)):
+                            l.append(line[i].rstrip())
+                        self.levels[line[1]] = l
+        print self.levels
+        print self.compartments
+        labels = set()
+        labels.add(RLLabel())
+        temp = set()
+        for key in self.levels.keys():
+            for label in labels:
+                for level in range(len(self.levels[key])):
+                    newLabel = copy.deepcopy(label)
+                    newLabel.level[key] = level
+                    temp.add(newLabel)
+            labels = temp.copy()
+            temp.clear()
+
+        for key in self.compartments.keys():
+            ps = []
+            for i in powerset(self.compartments[key]):
+                ps.append(set(i))
+            for label in labels:
+                for s in ps:
+                    newLabel = copy.deepcopy(label)
+                    newLabel.compartment[key] = s
+                    temp.add(newLabel)
+            labels = temp.copy()
+            temp.clear()
+
+        for i in labels:
+            for j in labels:
+                if j.compare(i) > 0:
+                    self.add_sub(i, j)
+            self.constants.add(i)
 def test_lattice_print(l1, l2, output, result, msg):
     if output == result:
         print('checking {0} {2} {1} - PASSED'.format(str(l1), str(l2), msg))
     else:
-        print('checking {0} {4} {1} - FAiled with output {2}, not {3}'.format(str(l1), str(l2), str(output), str(result), msg))
+        print('checking {0} {4} {1} - FAiled with output {2}, not {3}'.format(
+            str(l1), str(l2), str(output), str(result), msg))
 
 
 def test_lattice_join(lattice, l1, l2, result):
@@ -96,29 +146,73 @@ def test_lattice_sub(lattice, l1, l2, result):
 
 
 if __name__ == '__main__':
-    l1 = Label("L1")
-    l2 = Label("L2")
-    l3 = Label("L3")
-    l4 = Label("L4")
-    l5 = Label("L5")
-    l6 = Label("L6")
-    lattice = Lattice()
-    lattice.add_sub(l5, l4)
-    lattice.add_sub(l2, l5)
-    lattice.add_sub(l2, l4)
-    lattice.add_sub(l2, l3)
-    lattice.add_sub(l4, l6)
-    lattice.add_sub(l1, l3)
-    lattice.add_sub(l1, l2)
-    lb = lattice.bot
-    lt = lattice.top
+    str = 'CONST[source:1(mediator),value:1(fixed)][purpose:{object,operation,subject},aa:{}]'
+    print str
+    re_match = re.compile(r"CONST\[(.*)\]\[(.*)\]").match(str)
+    if re_match:
+        level = re_match.group(1)
+        compartment = re_match.group(2)
+        level = re.split(',', level)
+        for l in level:
+            l_match = re.compile(r"([a-zA-Z0-9]*):([0-9]*)\(.*\)").match(l)
+            print l_match.groups()
+        compartment = re.compile(
+            r"([a-zA-Z0-9]*:\{[a-zA-Z0-9,]*\})").findall(compartment)
+        for c in compartment:
+            print c
+            c_match = re.compile(
+                r"([a-zA-Z0-9]*):\{([a-zA-Z0-9,]*)\}").match(c)
+            print c_match.group(1)
+            if (c_match.group(2) == ''):
+                c_set = []
+            else:
+                c_set = re.split(',', c_match.group(2))
+            print c_set
 
-    print("Testing latticee Model:" + str(lattice))
+    else:
+        raise Exception("Bad format!")
 
-    for l in lattice.labels:
-        print str(l)
+    lat = RLLattice()
+    # print lat
 
-    print lattice.lowest
+    test = RLLabel()
+    test.level['source'] = 1
+    test.level['value'] = 0
+    test.compartment['purpose'] = set(['operation', 'object'])
+
+    print test in lat.labels
+
+    # l1 = Label("L", "1", "3", "5")
+    # l2 = Label("H", "2", "3", "4")
+    
+    # print '---', lat.check_sub(l1, l2)
+    # print '---', lat.check_sub(l2, l2)
+    # print '---', lat.check_sub(l2, l1)
+    # print '---', lat.check_sub(l1, l1)
+
+    # l1 = Label("L1")
+    # l2 = Label("L2")
+    # l3 = Label("L3")
+    # l4 = Label("L4")
+    # l5 = Label("L5")
+    # l6 = Label("L6")
+    # lattice = Lattice()
+    # lattice.add_sub(l5, l4)
+    # lattice.add_sub(l2, l5)
+    # lattice.add_sub(l2, l4)
+    # lattice.add_sub(l2, l3)
+    # lattice.add_sub(l4, l6)
+    # lattice.add_sub(l1, l3)
+    # lattice.add_sub(l1, l2)
+    # lb = lattice.bot
+    # lt = lattice.top
+
+    # print("Testing lattice Model:" + str(lattice))
+
+    # for l in lattice.labels:
+    #     print str(l)
+
+    # print lattice.lowest
 
     # test_lattice_sub(lattice, l1, l2, False)
     # test_lattice_sub(lattice, l1, l3, True)

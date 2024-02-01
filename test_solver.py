@@ -1,21 +1,3 @@
-#     This file is part of Derivation Solver. Derivation Solver provides
-#     implementation of derivation solvers for dependent type inference.
-# 
-#     Copyright (C) 2018  Peixuan Li
-# 
-#     Derivation Solver is free software: you can redistribute it and/or modify
-#     it under the terms of the GNU General Public License as published by
-#     the Free Software Foundation, either version 3 of the License, or
-#     (at your option) any later version.
-#
-#     Derivation Solver is distributed in the hope that it will be useful,
-#     but WITHOUT ANY WARRANTY; without even the implied warranty of
-#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#     GNU General Public License for more details.
-#
-#     You should have received a copy of the GNU General Public License
-#     along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
-# 
 from solver import *
 #from plot import *
 from result import *
@@ -70,8 +52,10 @@ class LeftJoinParser(CoreConstraintParser):
         return result
 
     def init_lexer(self):
-        self.lexer.add_tokens(NoneToken(), ParenLeftToken(), ParenRightToken(), JoinToken(),
-                              AndToken(), SubToken(), SemiToken(), VariableToken())
+        self.lexer.add_tokens(NoneToken(), DebugToken(), ConstToken(),
+                              SquareBracketStartToken(), SquareBracketEndToken(),
+                              AndToken(), SubToken(),  DelimToken(),
+                              SemiToken(),  VariableToken(), SatToken(), IntegerToken())
 
     def pre_process(self, input_str):
         return re.sub(CommentToken().lex_reg, ';', input_str)
@@ -103,25 +87,69 @@ class LeftJoinParser(CoreConstraintParser):
         state = 0
         left = []
         sub_token = SubToken()
-        for token in cons:
-            if isinstance(token, VariableToken):
-                if state == 0:
-                    left.append(token)
+
+        idx = 0
+        consumed_exp1 = False
+        t_sub = Token()
+        while idx != len(cons):
+            if isinstance(cons[idx], DebugToken):
+                idx = len(cons)
+            elif isinstance(cons[idx], ConstToken):
+                if not consumed_exp1:
+                    exp1 = RLLabel()
+                    exp1.parseConstString(cons[idx].token_string)
+                    if exp1 not in self.labels:
+                        raise Exception("{0}\n\tis a Bad constant constraint element!".format(exp1))
+                    consumed_exp1 = True
                 else:
-                    for var in left:
-                        conset.append(self.generate_constraint(var, sub_token, token))
-                    left = []
-            elif isinstance(token, SubToken):
-                state = 1
-                sub_token = token
-            elif isinstance(token, AndToken):
-                state = 0
+                    exp2 = RLLabel()
+                    exp2.parseConstString(cons[idx].token_string)
+                    if exp2 not in self.labels:
+                        raise Exception("{0}\n\tis a Bad constant constraint element!".format(exp2))
+                    constr = Con(exp1, Op(t_sub.token_string), exp2)
+                    # print constr
+                    conset.append(constr)
+                    constr = ''
+                    consumed_exp1 = False
+                idx = idx + 1
+            elif isinstance(cons[idx], VariableToken) and isinstance(cons[idx + 1], SquareBracketStartToken):
+                addr = cons[idx].token_string
+                name = file = line = ''
+                idx = idx + 2
+                if isinstance(cons[idx], VariableToken):
+                    name = cons[idx].token_string
+                    idx = idx + 1
+                idx = idx + 1
+                if isinstance(cons[idx], VariableToken):
+                    file = cons[idx].token_string
+                    idx = idx + 1
+                idx = idx + 1
+                if isinstance(cons[idx], VariableToken):
+                    line = cons[idx].token_string
+                    idx = idx + 1
+                idx = idx + 1
+                if not consumed_exp1:
+                    exp1 = CVar(addr, name, file, line)
+                    consumed_exp1 = True
+                else:
+                    exp2 = CVar(addr, name, file, line)
+                    constr = Con(exp1, Op(t_sub.token_string), exp2)
+                    # print constr
+                    conset.append(constr)
+                    constr = ''
+                    consumed_exp1 = False
+            elif isinstance(cons[idx], SubToken):
+                t_sub = cons[idx]
+                idx = idx + 1
+            else:
+                idx = idx + 1
+
         return conset
 
 
 class TestSolver(PartitionDerivationSolver):
-    def __init__(self, partt=SequentialPartition()):
-        PartitionDerivationSolver.__init__(self, partt)
+    def __init__(self, lat, partt=SequentialPartition()):
+        PartitionDerivationSolver.__init__(self, lat, partt)
 
     def pretty_solution(self):
         msg = "{\n"
@@ -139,29 +167,34 @@ class TestSolver(PartitionDerivationSolver):
         return msg
 
 
-def test_file(file_name, partts, appr):
+def test_file(file_name, partts, appr, lat):
     if file_name[len(con_ext)*-1:] == con_ext:
         print "Working on file: " + file_name
         test_file = open(file_name, 'r')
         input_str = test_file.read()
         test_file.close()
 
-        pconset = LeftJoinParser().parse(input_str)
+        start_time = time.time()
+        lattice = RLLattice(lat)
+
+        pconset = LeftJoinParser(lattice.constants).parse(input_str)
         num = len(pconset)
         if globals.DEBUG:
-            print "Constraint Set: \n" + pretty_pcon_set_print(pconset)
+            # print "Constraint Set: \n" + pretty_pcon_set_print(pconset)
             print "#constraints: " + str(num)
+            print("--- %s seconds on parsing constraint file ---" %
+                  (time.time() - start_time))
 
         cur_perform = {}
         for i in globals.Approach.keys():
             cur_perform[i] = []
 
         for partt in partts:
-            solver = TestSolver()
+            solver = TestSolver(lattice)
             if partt == globals.COMB_PARTT:
-                solver = TestSolver(CombinationPartition())
+                solver = TestSolver(lattice, CombinationPartition())
             # elif partt == globals.OP_COMB_PARTT:
-            #     solver = TestSolver(OpCombinationPartition())
+            #     solver = TestSolver(lattice, OpCombinationPartition())
 
             files.append(file_name[len(TEST_DIR):len(con_ext)*-1])
             number.append(num)
@@ -198,13 +231,14 @@ if __name__ == '__main__':
         print "\t\t\t3=early-reject; if not specified, it tests [0,1,2] approaches."
         print "\t -time  i : specifying time-out minutes; default i=3 min."
         print "\t -debug [0-1] : print debug message; default 1 with debug message on"
+        print "\t -lattice [0-1] : specify the lattice file, use two point lattice for default"
 
     else:
         file_name = output_file_name()
-        # print file_name
         # try:
         partt = globals.ParttAlg.keys()
         appr = globals.Approach.keys()
+        lat=None
         appr.pop(globals.EARLY_REJECT_APPROACH)
         for i in range(2, len(sys.argv)):
             if sys.argv[i] == "-partt":
@@ -216,14 +250,17 @@ if __name__ == '__main__':
                 globals.STOP_MIN = float(sys.argv[i+1])
             elif sys.argv[i] == "-debug":
                 globals.DEBUG = int(sys.argv[i+1])
+            elif sys.argv[i] == "-lattice":
+                lat = sys.argv[i+1]
 
         file_test = sys.argv[1]
+
         if sys.argv[1] == 'all':
             file_test = [TEST_DIR + file for file in os.listdir(TEST_DIR)]
             for test_file_name in file_test:
-                test_file(test_file_name, partt, appr)
+                test_file(test_file_name, partt, appr, lat)
         else:
-            test_file(file_test, partt, appr)
+            test_file(file_test, partt, appr, lat)
 
         # save result:
         if files:
