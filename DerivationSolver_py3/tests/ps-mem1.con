@@ -1,0 +1,12 @@
+; assertions to be verified
+ (join dStall iStall) <: pipeInhibit     ; assign pipeInhibit = (dStall)|(iStall) @mem1.v:329
+ (join iDataRamMuxOut iStall) <: Iin     ; Iin = iDataRamMuxOut @mem1.v:341
+ iStall <: Iin     ; Iin = 0 @mem1.v:341
+(isLoad==1)  =>  H <: H     ; cacheOut = dDataRamMuxOut @mem1.v:344
+(Not(isLoad==1))  =>  isLoad <: H     ; cacheOut = 0 @mem1.v:344
+(MRST==1)  =>  L <: H     ; CPU.numLoads <= 0 @mem1.v:306
+(MRST==1)  =>  L <: H     ; CPU.numStores <= 0 @mem1.v:307
+ H <: H     ; CPU.numLoads <= (CPU.numLoads)+(1) @mem1.v:311
+ H <: H     ; CPU.numStores <= (CPU.numStores)+(1) @mem1.v:314
+(MRST==1)  =>  L <: pcInhibit     ; pcInhibit <= 0 @mem1.v:333
+(Not(MRST==1))  =>  pipeInhibit <: pcInhibit     ; pcInhibit <= pipeInhibit @mem1.v:336

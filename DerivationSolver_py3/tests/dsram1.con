@@ -1,0 +1,27 @@
+; assertions to be verified
+(way==1) (way==0)  =>  (join din (join L (join L clk))) <: L     ; mem0[index] = din @dsram1.v:64
+(way==3) (way==0)  =>  (join din (join H (join H clk))) <: L     ; mem0[index] = din @dsram1.v:64
+(way==2) (way==0)  =>  (join din (join H (join H clk))) <: L     ; mem0[index] = din @dsram1.v:64
+(way==0) (way==0)  =>  (join din (join L (join L clk))) <: L     ; mem0[index] = din @dsram1.v:64
+(way==1) (way==1)  =>  (join din (join L (join L clk))) <: L     ; mem1[index] = din @dsram1.v:67
+(way==3) (way==1)  =>  (join din (join H (join H clk))) <: L     ; mem1[index] = din @dsram1.v:67
+(way==2) (way==1)  =>  (join din (join H (join H clk))) <: L     ; mem1[index] = din @dsram1.v:67
+(way==0) (way==1)  =>  (join din (join L (join L clk))) <: L     ; mem1[index] = din @dsram1.v:67
+(way==1) (way==2)  =>  (join din (join L (join L clk))) <: H     ; mem2[index] = din @dsram1.v:70
+(way==3) (way==2)  =>  (join din (join H (join H clk))) <: H     ; mem2[index] = din @dsram1.v:70
+(way==2) (way==2)  =>  (join din (join H (join H clk))) <: H     ; mem2[index] = din @dsram1.v:70
+(way==0) (way==2)  =>  (join din (join L (join L clk))) <: H     ; mem2[index] = din @dsram1.v:70
+(way==1) (way==3)  =>  (join din (join L (join L clk))) <: H     ; mem3[index] = din @dsram1.v:73
+(way==3) (way==3)  =>  (join din (join H (join H clk))) <: H     ; mem3[index] = din @dsram1.v:73
+(way==2) (way==3)  =>  (join din (join H (join H clk))) <: H     ; mem3[index] = din @dsram1.v:73
+(way==0) (way==3)  =>  (join din (join L (join L clk))) <: H     ; mem3[index] = din @dsram1.v:73
+(way==1) (en==1)  =>  L <: L     ; dout0 = mem0[index] @dsram1.v:82
+(way==3) (en==1)  =>  H <: L     ; dout0 = mem0[index] @dsram1.v:82
+(way==2) (en==1)  =>  H <: L     ; dout0 = mem0[index] @dsram1.v:82
+(way==0) (en==1)  =>  L <: L     ; dout0 = mem0[index] @dsram1.v:82
+(way==1) (en==1)  =>  L <: L     ; dout1 = mem1[index] @dsram1.v:83
+(way==3) (en==1)  =>  H <: L     ; dout1 = mem1[index] @dsram1.v:83
+(way==2) (en==1)  =>  H <: L     ; dout1 = mem1[index] @dsram1.v:83
+(way==0) (en==1)  =>  L <: L     ; dout1 = mem1[index] @dsram1.v:83
+(en==1)  =>  H <: H     ; dout2 = mem2[index] @dsram1.v:84
+(en==1)  =>  H <: H     ; dout3 = mem3[index] @dsram1.v:85

@@ -1,0 +1,35 @@
+; assertions to be verified
+(way==2) (way==0)  =>  (join din (join H (join H clk))) <: L     ; mem0[index] = din @dsram.v:64
+(way==3) (way==0)  =>  (join din (join H (join H clk))) <: L     ; mem0[index] = din @dsram.v:64
+(way==0) (way==0)  =>  (join din (join L (join L clk))) <: L     ; mem0[index] = din @dsram.v:64
+(way==1) (way==0)  =>  (join din (join L (join L clk))) <: L     ; mem0[index] = din @dsram.v:64
+(way==2) (way==1)  =>  (join din (join H (join H clk))) <: L     ; mem1[index] = din @dsram.v:67
+(way==3) (way==1)  =>  (join din (join H (join H clk))) <: L     ; mem1[index] = din @dsram.v:67
+(way==0) (way==1)  =>  (join din (join L (join L clk))) <: L     ; mem1[index] = din @dsram.v:67
+(way==1) (way==1)  =>  (join din (join L (join L clk))) <: L     ; mem1[index] = din @dsram.v:67
+(way==2) (way==2)  =>  (join din (join H (join H clk))) <: H     ; mem2[index] = din @dsram.v:70
+(way==3) (way==2)  =>  (join din (join H (join H clk))) <: H     ; mem2[index] = din @dsram.v:70
+(way==0) (way==2)  =>  (join din (join L (join L clk))) <: H     ; mem2[index] = din @dsram.v:70
+(way==1) (way==2)  =>  (join din (join L (join L clk))) <: H     ; mem2[index] = din @dsram.v:70
+(way==2) (way==3)  =>  (join din (join H (join H clk))) <: H     ; mem3[index] = din @dsram.v:73
+(way==3) (way==3)  =>  (join din (join H (join H clk))) <: H     ; mem3[index] = din @dsram.v:73
+(way==0) (way==3)  =>  (join din (join L (join L clk))) <: H     ; mem3[index] = din @dsram.v:73
+(way==1) (way==3)  =>  (join din (join L (join L clk))) <: H     ; mem3[index] = din @dsram.v:73
+(way==2) (en==1)  =>  H <: dout0     ; no-sensitive-upgrade check dout0 = mem0[index] @dsram.v:82
+(way==3) (en==1)  =>  H <: dout0     ; no-sensitive-upgrade check dout0 = mem0[index] @dsram.v:82
+(way==0) (en==1)  =>  L <: dout0     ; no-sensitive-upgrade check dout0 = mem0[index] @dsram.v:82
+(way==1) (en==1)  =>  L <: dout0     ; no-sensitive-upgrade check dout0 = mem0[index] @dsram.v:82
+(way==2) (en==1)  =>  H <: dout0     ; dout0 = mem0[index] @dsram.v:82
+(way==3) (en==1)  =>  H <: dout0     ; dout0 = mem0[index] @dsram.v:82
+(way==0) (en==1)  =>  L <: dout0     ; dout0 = mem0[index] @dsram.v:82
+(way==1) (en==1)  =>  L <: dout0     ; dout0 = mem0[index] @dsram.v:82
+(way==2) (en==1)  =>  H <: dout1     ; no-sensitive-upgrade check dout1 = mem1[index] @dsram.v:83
+(way==3) (en==1)  =>  H <: dout1     ; no-sensitive-upgrade check dout1 = mem1[index] @dsram.v:83
+(way==0) (en==1)  =>  L <: dout1     ; no-sensitive-upgrade check dout1 = mem1[index] @dsram.v:83
+(way==1) (en==1)  =>  L <: dout1     ; no-sensitive-upgrade check dout1 = mem1[index] @dsram.v:83
+(way==2) (en==1)  =>  H <: dout1     ; dout1 = mem1[index] @dsram.v:83
+(way==3) (en==1)  =>  H <: dout1     ; dout1 = mem1[index] @dsram.v:83
+(way==0) (en==1)  =>  L <: dout1     ; dout1 = mem1[index] @dsram.v:83
+(way==1) (en==1)  =>  L <: dout1     ; dout1 = mem1[index] @dsram.v:83
+(en==1)  =>  H <: H     ; dout2 = mem2[index] @dsram.v:84
+(en==1)  =>  H <: H     ; dout3 = mem3[index] @dsram.v:85

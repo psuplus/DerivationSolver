@@ -1,0 +1,47 @@
+; assertions to be verified
+ (join dStall iStall) <: pipeInhibit     ; assign pipeInhibit = (dStall)|(iStall) @mem14.v:329
+ (join iDataRamMuxOut iStall) <: Iin     ; Iin = iDataRamMuxOut @mem14.v:341
+ iStall <: Iin     ; Iin = 0 @mem14.v:341
+(isLoad==1)  =>  H <: H     ; cacheOut = dDataRamMuxOut @mem14.v:344
+(Not(isLoad==1))  =>  isLoad <: H     ; cacheOut = 0 @mem14.v:344
+(MRST==1)  =>  L <: H     ; CPU.numLoads <= 0 @mem14.v:306
+(MRST==1)  =>  L <: H     ; CPU.numStores <= 0 @mem14.v:307
+ H <: H     ; CPU.numLoads <= (CPU.numLoads)+(1) @mem14.v:311
+ H <: H     ; CPU.numStores <= (CPU.numStores)+(1) @mem14.v:314
+(MRST==1)  =>  L <: pcInhibit     ; pcInhibit <= 0 @mem14.v:333
+(Not(MRST==1))  =>  pipeInhibit <: pcInhibit     ; pcInhibit <= pipeInhibit @mem14.v:336
+(MRST==1)  =>  L <: dFsmState     ; no-sensitive-upgrade check dFsmState <= IFSM_IDLE @mem14.v:356
+(MRST==1)  =>  L <: dFsmState     ; dFsmState <= IFSM_IDLE @mem14.v:356
+(MRST==1)  =>  L <: dTagRamWe     ; no-sensitive-upgrade check dTagRamWe <= 0 @mem14.v:359
+(MRST==1)  =>  L <: dTagRamWe     ; dTagRamWe <= 0 @mem14.v:359
+(dStateWay==2) (MRST==1)  =>  L <: H     ; dStateRamWe <= 0 @mem14.v:360
+(dStateWay==3) (MRST==1)  =>  L <: H     ; dStateRamWe <= 0 @mem14.v:360
+(dStateWay==0) (MRST==1)  =>  L <: L     ; dStateRamWe <= 0 @mem14.v:360
+(dStateWay==1) (MRST==1)  =>  L <: L     ; dStateRamWe <= 0 @mem14.v:360
+(dStateWay==2) (MRST==1)  =>  L <: H     ; dStateRamIn <= 0 @mem14.v:361
+(dStateWay==3) (MRST==1)  =>  L <: H     ; dStateRamIn <= 0 @mem14.v:361
+(dStateWay==0) (MRST==1)  =>  L <: L     ; dStateRamIn <= 0 @mem14.v:361
+(dStateWay==1) (MRST==1)  =>  L <: L     ; dStateRamIn <= 0 @mem14.v:361
+(MRST==1)  =>  L <: dDataRamWe     ; no-sensitive-upgrade check dDataRamWe <= 0 @mem14.v:362
+(MRST==1)  =>  L <: dDataRamWe     ; dDataRamWe <= 0 @mem14.v:362
+(MRST==1)  =>  L <: dOffset     ; no-sensitive-upgrade check dOffset <= {3{0}} @mem14.v:363
+(MRST==1)  =>  L <: dOffset     ; dOffset <= {3{0}} @mem14.v:363
+(ReadLabel==0) (MRST==1)  =>  L <: L     ; dDataRamIn <= 0 @mem14.v:364
+(ReadLabel==1) (MRST==1)  =>  L <: H     ; dDataRamIn <= 0 @mem14.v:364
+(MRST==1)  =>  L <: dMemRead     ; no-sensitive-upgrade check dMemRead <= 0 @mem14.v:367
+(MRST==1)  =>  L <: dMemRead     ; dMemRead <= 0 @mem14.v:367
+(MRST==1)  =>  L <: dMemWrite     ; no-sensitive-upgrade check dMemWrite <= 0 @mem14.v:368
+(MRST==1)  =>  L <: dMemWrite     ; dMemWrite <= 0 @mem14.v:368
+(MRST==1)  =>  L <: dMemAddr     ; no-sensitive-upgrade check dMemAddr <= 0 @mem14.v:369
+(MRST==1)  =>  L <: dMemAddr     ; dMemAddr <= 0 @mem14.v:369
+(MRST==1)  =>  L <: BusSel     ; no-sensitive-upgrade check BusSel <= 0 @mem14.v:372
+(MRST==1)  =>  L <: BusSel     ; BusSel <= 0 @mem14.v:372
+(MRST==1)  =>  L <: H     ; CPU.numDMisses <= 0 @mem14.v:376
+(dMemValid==1) (Not(MRST==1)) (dFsmState==DFSM_WAITMEM)  =>  (join dMemValid dFsmState) <: dFsmState     ; no-sensitive-upgrade check dFsmState <= DFSM_REFILL @mem14.v:387
+(dMemValid==1) (Not(MRST==1)) (dFsmState==DFSM_WAITMEM)  =>  (join dMemValid dFsmState) <: dFsmState     ; dFsmState <= DFSM_REFILL @mem14.v:387
+(dMemValid==1) (Not(MRST==1)) (dFsmState==DFSM_WAITMEM)  =>  (join dMemValid dFsmState) <: dDataRamWe     ; no-sensitive-upgrade check dDataRamWe <= 1 @mem14.v:390
+(dMemValid==1) (Not(MRST==1)) (dFsmState==DFSM_WAITMEM)  =>  (join dMemValid dFsmState) <: dDataRamWe     ; dDataRamWe <= 1 @mem14.v:390
+(ReadLabel==0) (dMemValid==1) (Not(MRST==1)) (dFsmState==DFSM_WAITMEM) (And (And (dHit==0 , ReadLabel==0) , dHitNaive==1))  =>  H <: L     ; dDataRamIn <= dDataRamMuxOut @mem14.v:392
+(ReadLabel==1) (dMemValid==1) (Not(MRST==1)) (dFsmState==DFSM_WAITMEM) (And (And (dHit==0 , ReadLabel==0) , dHitNaive==1))  =>  H <: H     ; dDataRamIn <= dDataRamMuxOut @mem14.v:392
+(ReadLabel==0) (dMemValid==1) (Not(MRST==1)) (dFsmState==DFSM_WAITMEM) (Not(And (And (dHit==0 , ReadLabel==0) , dHitNaive==1)))  =>  H <: L     ; dDataRamIn <= Bus @mem14.v:395
+(ReadLabel==1) (dMemValid==1) (Not(MRST==1)) (dFsmState==DFSM_WAITMEM) (Not(And (And (dHit==0 , ReadLabel==0) , dHitNaive==1)))  =>  H <: H     ; dDataRamIn <= Bus @mem14.v:395

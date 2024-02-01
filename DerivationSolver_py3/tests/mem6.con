@@ -1,0 +1,105 @@
+; assertions to be verified
+ (join dStall iStall) <: pipeInhibit     ; assign pipeInhibit = (dStall)|(iStall) @mem6.v:329
+(Iin==iDataRamMuxOut)  =>  (join iDataRamMuxOut iStall) <: Iin     ; Iin = iDataRamMuxOut @mem6.v:341
+(Iin==0)  =>  iStall <: Iin     ; Iin = 0 @mem6.v:341
+(isLoad==1)  =>  H <: H     ; cacheOut = dDataRamMuxOut @mem6.v:344
+(Not(isLoad==1))  =>  isLoad <: H     ; cacheOut = 0 @mem6.v:344
+ (join (join dTagRamOutLow MAR) dStateRamOutLow) <: dHit0     ; assign dHit0 = (dTagRamOutLow[0]==MAR[31:13])&(dStateRamOutLow[0][0]) @mem6.v:358
+ (join (join dTagRamOutLow MAR) dStateRamOutLow) <: dHit1     ; assign dHit1 = (dTagRamOutLow[1]==MAR[31:13])&(dStateRamOutLow[1][0]) @mem6.v:359
+ H <: H     ; assign dHit2 = (dTagRamOutHigh[0]==MAR[31:13])&(dStateRamOutHigh[0][0]) @mem6.v:360
+ H <: H     ; assign dHit3 = (dTagRamOutHigh[1]==MAR[31:13])&(dStateRamOutHigh[1][0]) @mem6.v:361
+ H <: H     ; assign dHitNaive = (((dHit0)|(dHit1))|(dHit2))|(dHit3) @mem6.v:363
+(ReadLabel==0) (dHit==1)  =>  (join (join dHit0 dHit1) ReadLabel) <: dHit     ; dHit = 1 @mem6.v:365
+(ReadLabel==0) (dHit==0)  =>  (join (join dHit0 dHit1) ReadLabel) <: dHit     ; dHit = 0 @mem6.v:365
+(Not(ReadLabel==0)) (dHit==1)  =>  H <: dHit     ; dHit = 1 @mem6.v:366
+(Not(ReadLabel==0)) (dHit==0)  =>  H <: dHit     ; dHit = 0 @mem6.v:366
+(dHit0==1)  =>  H <: H     ; dDataRamMuxOut = dDataRamOutLow[0] @mem6.v:368
+(dHit1==1) (Not(dHit0==1))  =>  H <: H     ; dDataRamMuxOut = dDataRamOutLow[1] @mem6.v:369
+(Not(dHit1==1)) (Not(dHit0==1)) (dHit2==1)  =>  H <: H     ; dDataRamMuxOut = dDataRamOutHigh[0] @mem6.v:370
+(Not(dHit1==1)) (Not(dHit0==1)) (Not(dHit2==1)) (dHit3==1)  =>  H <: H     ; dDataRamMuxOut = dDataRamOutHigh[1] @mem6.v:371
+(Not(dHit1==1)) (Not(dHit0==1)) (Not(dHit2==1)) (Not(dHit3==1))  =>  H <: H     ; dDataRamMuxOut = 0 @mem6.v:371
+ (join (join isLoad isStore) (join dHit dFsmState)) <: dStall     ; assign dStall = ((isLoad)|(isStore))&((~(dHit))|(Not( dFsmState==DFSM_IDLE))) @mem6.v:373
+ MAR <: dTagRamIndex     ; assign dTagRamIndex = MAR[12:5] @mem6.v:376
+ MAR <: dTagRamIn     ; assign dTagRamIn = MAR[31:13] @mem6.v:377
+(dFsmState==DFSM_STOREHIT)  =>  (join rMAR dFsmState) <: dStateRamIndex     ; dStateRamIndex = rMAR[12:5] @mem6.v:379
+(Not(dFsmState==DFSM_STOREHIT))  =>  (join MAR dFsmState) <: dStateRamIndex     ; dStateRamIndex = MAR[12:5] @mem6.v:379
+(dFsmState==DFSM_STOREHIT)  =>  (join rMAR dFsmState) <: dDataRamIndex     ; dDataRamIndex = rMAR[12:5] @mem6.v:381
+(Not(dFsmState==DFSM_STOREHIT))  =>  (join MAR dFsmState) <: dDataRamIndex     ; dDataRamIndex = MAR[12:5] @mem6.v:381
+(dFsmState==DFSM_REFILL)  =>  (join dOffset dFsmState) <: dDataRamOffset     ; dDataRamOffset = dOffset[(3)-(1):0] @mem6.v:382
+(Not(dFsmState==DFSM_REFILL)) (dFsmState==DFSM_WRITEBACK)  =>  (join dOffset dFsmState) <: dDataRamOffset     ; dDataRamOffset = dOffset[(3)-(1):0] @mem6.v:383
+(Not(dFsmState==DFSM_REFILL)) (Not(dFsmState==DFSM_WRITEBACK)) (dFsmState==DFSM_STOREHIT)  =>  (join rMAR dFsmState) <: dDataRamOffset     ; dDataRamOffset = rMAR[4:2] @mem6.v:384
+(Not(dFsmState==DFSM_REFILL)) (Not(dFsmState==DFSM_WRITEBACK)) (Not(dFsmState==DFSM_STOREHIT))  =>  (join MAR dFsmState) <: dDataRamOffset     ; dDataRamOffset = MAR[4:2] @mem6.v:384
+(dWriteWay==0)  =>  H <: H     ; dMemBus = dDataRamOutLow[0] @mem6.v:387
+(Not(dWriteWay==0)) (dWriteWay==1)  =>  H <: H     ; dMemBus = dDataRamOutLow[1] @mem6.v:388
+(Not(dWriteWay==0)) (dWriteWay==2) (Not(dWriteWay==1))  =>  H <: H     ; dMemBus = dDataRamOutHigh[0] @mem6.v:389
+(Not(dWriteWay==0)) (Not(dWriteWay==2)) (Not(dWriteWay==1)) (dWriteWay==3)  =>  H <: H     ; dMemBus = dDataRamOutHigh[1] @mem6.v:390
+(dWriteWay==2) (Not(dWriteWay==0)) (Not(dWriteWay==2)) (Not(dWriteWay==1)) (Not(dWriteWay==3))  =>  H <: H     ; dMemBus = 0 @mem6.v:390
+(dWriteWay==3) (Not(dWriteWay==0)) (Not(dWriteWay==2)) (Not(dWriteWay==1)) (Not(dWriteWay==3))  =>  H <: H     ; dMemBus = 0 @mem6.v:390
+(dWriteWay==1) (Not(dWriteWay==0)) (Not(dWriteWay==2)) (Not(dWriteWay==1)) (Not(dWriteWay==3))  =>  L <: H     ; dMemBus = 0 @mem6.v:390
+(dWriteWay==0) (Not(dWriteWay==0)) (Not(dWriteWay==2)) (Not(dWriteWay==1)) (Not(dWriteWay==3))  =>  L <: H     ; dMemBus = 0 @mem6.v:390
+(And (And (And (dFsmState==DFSM_REFILL , dHit==0) , ReadLabel==0) , dHitNaive==1))  =>  H <: H     ; dDataRamInv2 = dDataRamMuxOut @mem6.v:392
+(Not(And (And (And (dFsmState==DFSM_REFILL , dHit==0) , ReadLabel==0) , dHitNaive==1)))  =>  H <: H     ; dDataRamInv2 = dDataRamIn @mem6.v:392
+(dReadWay==rtempdWay) (dFsmState==DFSM_STOREHIT)  =>  (join rtempdWay dFsmState) <: dReadWay     ; dReadWay = rtempdWay @mem6.v:444
+(Not(dFsmState==DFSM_STOREHIT)) (dReadWay==tempdWay)  =>  (join tempdWay dFsmState) <: dReadWay     ; dReadWay = tempdWay @mem6.v:444
+(dStateWay==2) (dStateWay==2) (dFsmState==DFSM_REFILL) (dHit2==1)  =>  H <: H     ; dStateWay = 2 @mem6.v:445
+(dStateWay==3) (dStateWay==2) (dFsmState==DFSM_REFILL) (dHit2==1)  =>  H <: H     ; dStateWay = 2 @mem6.v:445
+(dStateWay==1) (dStateWay==2) (dFsmState==DFSM_REFILL) (dHit2==1)  =>  H <: L     ; dStateWay = 2 @mem6.v:445
+(dStateWay==0) (dStateWay==2) (dFsmState==DFSM_REFILL) (dHit2==1)  =>  H <: L     ; dStateWay = 2 @mem6.v:445
+(dStateWay==2) (dFsmState==DFSM_REFILL) (dStateWay==3) (Not(dHit2==1))  =>  H <: H     ; dStateWay = 3 @mem6.v:445
+(dStateWay==3) (dFsmState==DFSM_REFILL) (dStateWay==3) (Not(dHit2==1))  =>  H <: H     ; dStateWay = 3 @mem6.v:445
+(dStateWay==1) (dFsmState==DFSM_REFILL) (dStateWay==3) (Not(dHit2==1))  =>  H <: L     ; dStateWay = 3 @mem6.v:445
+(dStateWay==0) (dFsmState==DFSM_REFILL) (dStateWay==3) (Not(dHit2==1))  =>  H <: L     ; dStateWay = 3 @mem6.v:445
+(dStateWay==2) (Not(And (dFsmState==DFSM_REFILL , dOffset==7))) (dStateWay==dWriteWay)  =>  (join H (join dFsmState dOffset)) <: H     ; dStateWay = dWriteWay @mem6.v:445
+(dStateWay==3) (Not(And (dFsmState==DFSM_REFILL , dOffset==7))) (dStateWay==dWriteWay)  =>  (join H (join dFsmState dOffset)) <: H     ; dStateWay = dWriteWay @mem6.v:445
+(dStateWay==1) (Not(And (dFsmState==DFSM_REFILL , dOffset==7))) (dStateWay==dWriteWay)  =>  (join L (join dFsmState dOffset)) <: L     ; dStateWay = dWriteWay @mem6.v:445
+(dStateWay==0) (Not(And (dFsmState==DFSM_REFILL , dOffset==7))) (dStateWay==dWriteWay)  =>  (join L (join dFsmState dOffset)) <: L     ; dStateWay = dWriteWay @mem6.v:445
+(MRST==1)  =>  L <: H     ; CPU.numLoads <= 0 @mem6.v:306
+(MRST==1)  =>  L <: H     ; CPU.numStores <= 0 @mem6.v:307
+ H <: H     ; CPU.numLoads <= (CPU.numLoads)+(1) @mem6.v:311
+ H <: H     ; CPU.numStores <= (CPU.numStores)+(1) @mem6.v:314
+(pcInhibit==0) (MRST==1)  =>  L <: pcInhibit     ; pcInhibit <= 0 @mem6.v:333
+(pcInhibit==pipeInhibit) (Not(MRST==1))  =>  pipeInhibit <: pcInhibit     ; pcInhibit <= pipeInhibit @mem6.v:336
+(ReadLabel==0) (tempdWay==0) (dHit0==1)  =>  (join dHit0 (join (join dHit0 dHit1) ReadLabel)) <: tempdWay     ; tempdWay = 0 @mem6.v:400
+(ReadLabel==0) (tempdWay==1) (Not(dHit0==1))  =>  (join dHit0 (join (join dHit0 dHit1) ReadLabel)) <: tempdWay     ; tempdWay = 1 @mem6.v:400
+(ReadLabel==0) (tempdWay==1)  =>  (join I3 (join (join dHit0 dHit1) ReadLabel)) <: tempdWay     ; tempdWay = 1 @mem6.v:403
+(ReadLabel==0) (tempdWay==0)  =>  (join I3 (join (join dHit0 dHit1) ReadLabel)) <: tempdWay     ; tempdWay = 0 @mem6.v:403
+(Not(ReadLabel==0)) (tempdWay==0) (dHit0==1)  =>  H <: tempdWay     ; tempdWay = 0 @mem6.v:408
+(Not(ReadLabel==0)) (Not(dHit0==1)) (tempdWay==1) (dHit1==1)  =>  H <: tempdWay     ; tempdWay = 1 @mem6.v:408
+(Not(ReadLabel==0)) (Not(dHit0==1)) (dHit2==1) (Not(dHit1==1)) (tempdWay==2)  =>  H <: tempdWay     ; tempdWay = 2 @mem6.v:408
+(Not(ReadLabel==0)) (Not(dHit0==1)) (tempdWay==3) (Not(dHit1==1)) (Not(dHit2==1))  =>  H <: tempdWay     ; tempdWay = 3 @mem6.v:408
+(Not(ReadLabel==0)) (tempdWay==3)  =>  H <: tempdWay     ; tempdWay = 3 @mem6.v:411
+(Not(ReadLabel==0)) (tempdWay==2)  =>  H <: tempdWay     ; tempdWay = 2 @mem6.v:411
+(MRST==1) (rtempdWay==0)  =>  L <: rtempdWay     ; rtempdWay <= 0 @mem6.v:418
+(Not(MRST==1)) (rtempdWay==tempdWay)  =>  tempdWay <: rtempdWay     ; rtempdWay <= tempdWay @mem6.v:421
+(dWriteWay==2) (ReadLabel==0) (dWriteWay==0) (dHit0==1)  =>  (join dHit0 (join (join dHit0 dHit1) ReadLabel)) <: H     ; dWriteWay = 0 @mem6.v:428
+(dWriteWay==3) (ReadLabel==0) (dWriteWay==0) (dHit0==1)  =>  (join dHit0 (join (join dHit0 dHit1) ReadLabel)) <: H     ; dWriteWay = 0 @mem6.v:428
+(dWriteWay==1) (ReadLabel==0) (dWriteWay==0) (dHit0==1)  =>  (join dHit0 (join (join dHit0 dHit1) ReadLabel)) <: L     ; dWriteWay = 0 @mem6.v:428
+(dWriteWay==0) (ReadLabel==0) (dWriteWay==0) (dHit0==1)  =>  (join dHit0 (join (join dHit0 dHit1) ReadLabel)) <: L     ; dWriteWay = 0 @mem6.v:428
+(dWriteWay==2) (ReadLabel==0) (Not(dHit0==1)) (dWriteWay==1)  =>  (join dHit0 (join (join dHit0 dHit1) ReadLabel)) <: H     ; dWriteWay = 1 @mem6.v:428
+(dWriteWay==3) (ReadLabel==0) (Not(dHit0==1)) (dWriteWay==1)  =>  (join dHit0 (join (join dHit0 dHit1) ReadLabel)) <: H     ; dWriteWay = 1 @mem6.v:428
+(dWriteWay==1) (ReadLabel==0) (Not(dHit0==1)) (dWriteWay==1)  =>  (join dHit0 (join (join dHit0 dHit1) ReadLabel)) <: L     ; dWriteWay = 1 @mem6.v:428
+(dWriteWay==0) (ReadLabel==0) (Not(dHit0==1)) (dWriteWay==1)  =>  (join dHit0 (join (join dHit0 dHit1) ReadLabel)) <: L     ; dWriteWay = 1 @mem6.v:428
+(dWriteWay==2) (ReadLabel==0) (dWriteWay==1)  =>  (join I3 (join (join dHit0 dHit1) ReadLabel)) <: H     ; dWriteWay = 1 @mem6.v:431
+(dWriteWay==3) (ReadLabel==0) (dWriteWay==1)  =>  (join I3 (join (join dHit0 dHit1) ReadLabel)) <: H     ; dWriteWay = 1 @mem6.v:431
+(dWriteWay==1) (ReadLabel==0) (dWriteWay==1)  =>  (join I3 (join (join dHit0 dHit1) ReadLabel)) <: L     ; dWriteWay = 1 @mem6.v:431
+(dWriteWay==0) (ReadLabel==0) (dWriteWay==1)  =>  (join I3 (join (join dHit0 dHit1) ReadLabel)) <: L     ; dWriteWay = 1 @mem6.v:431
+(dWriteWay==2) (ReadLabel==0) (dWriteWay==0)  =>  (join I3 (join (join dHit0 dHit1) ReadLabel)) <: H     ; dWriteWay = 0 @mem6.v:431
+(dWriteWay==3) (ReadLabel==0) (dWriteWay==0)  =>  (join I3 (join (join dHit0 dHit1) ReadLabel)) <: H     ; dWriteWay = 0 @mem6.v:431
+(dWriteWay==1) (ReadLabel==0) (dWriteWay==0)  =>  (join I3 (join (join dHit0 dHit1) ReadLabel)) <: L     ; dWriteWay = 0 @mem6.v:431
+(dWriteWay==0) (ReadLabel==0) (dWriteWay==0)  =>  (join I3 (join (join dHit0 dHit1) ReadLabel)) <: L     ; dWriteWay = 0 @mem6.v:431
+(dWriteWay==2) (Not(ReadLabel==0)) (dHit2==1) (dWriteWay==2)  =>  H <: H     ; dWriteWay = 2 @mem6.v:436
+(dWriteWay==3) (Not(ReadLabel==0)) (dHit2==1) (dWriteWay==2)  =>  H <: H     ; dWriteWay = 2 @mem6.v:436
+(dWriteWay==1) (Not(ReadLabel==0)) (dHit2==1) (dWriteWay==2)  =>  H <: L     ; dWriteWay = 2 @mem6.v:436
+(dWriteWay==0) (Not(ReadLabel==0)) (dHit2==1) (dWriteWay==2)  =>  H <: L     ; dWriteWay = 2 @mem6.v:436
+(dWriteWay==2) (Not(ReadLabel==0)) (Not(dHit2==1)) (dWriteWay==3)  =>  H <: H     ; dWriteWay = 3 @mem6.v:436
+(dWriteWay==3) (Not(ReadLabel==0)) (Not(dHit2==1)) (dWriteWay==3)  =>  H <: H     ; dWriteWay = 3 @mem6.v:436
+(dWriteWay==1) (Not(ReadLabel==0)) (Not(dHit2==1)) (dWriteWay==3)  =>  H <: L     ; dWriteWay = 3 @mem6.v:436
+(dWriteWay==0) (Not(ReadLabel==0)) (Not(dHit2==1)) (dWriteWay==3)  =>  H <: L     ; dWriteWay = 3 @mem6.v:436
+(dWriteWay==2) (Not(ReadLabel==0)) (dWriteWay==3)  =>  H <: H     ; dWriteWay = 3 @mem6.v:439
+(dWriteWay==3) (Not(ReadLabel==0)) (dWriteWay==3)  =>  H <: H     ; dWriteWay = 3 @mem6.v:439
+(dWriteWay==1) (Not(ReadLabel==0)) (dWriteWay==3)  =>  H <: L     ; dWriteWay = 3 @mem6.v:439
+(dWriteWay==0) (Not(ReadLabel==0)) (dWriteWay==3)  =>  H <: L     ; dWriteWay = 3 @mem6.v:439
+(dWriteWay==2) (Not(ReadLabel==0)) (dWriteWay==2)  =>  H <: H     ; dWriteWay = 2 @mem6.v:439
+(dWriteWay==3) (Not(ReadLabel==0)) (dWriteWay==2)  =>  H <: H     ; dWriteWay = 2 @mem6.v:439
+(dWriteWay==1) (Not(ReadLabel==0)) (dWriteWay==2)  =>  H <: L     ; dWriteWay = 2 @mem6.v:439
+(dWriteWay==0) (Not(ReadLabel==0)) (dWriteWay==2)  =>  H <: L     ; dWriteWay = 2 @mem6.v:439

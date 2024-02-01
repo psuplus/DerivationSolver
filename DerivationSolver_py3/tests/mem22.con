@@ -1,0 +1,90 @@
+; assertions to be verified
+ (join dStall iStall) <: pipeInhibit     ; assign pipeInhibit = (dStall)|(iStall) @mem22.v:329
+(Iin==iDataRamMuxOut)  =>  (join iDataRamMuxOut iStall) <: Iin     ; Iin = iDataRamMuxOut @mem22.v:341
+(Iin==0)  =>  iStall <: Iin     ; Iin = 0 @mem22.v:341
+(isLoad==1)  =>  H <: H     ; cacheOut = dDataRamMuxOut @mem22.v:344
+(Not(isLoad==1))  =>  isLoad <: H     ; cacheOut = 0 @mem22.v:344
+(MRST==1)  =>  L <: H     ; CPU.numLoads <= 0 @mem22.v:306
+(MRST==1)  =>  L <: H     ; CPU.numStores <= 0 @mem22.v:307
+ H <: H     ; CPU.numLoads <= (CPU.numLoads)+(1) @mem22.v:311
+ H <: H     ; CPU.numStores <= (CPU.numStores)+(1) @mem22.v:314
+(pcInhibit==0) (MRST==1)  =>  L <: pcInhibit     ; pcInhibit <= 0 @mem22.v:333
+(Not(MRST==1)) (pcInhibit==pipeInhibit)  =>  pipeInhibit <: pcInhibit     ; pcInhibit <= pipeInhibit @mem22.v:336
+(ReadLabel==0) (MRST==1)  =>  L <: L     ; dFsmState <= IFSM_IDLE @mem22.v:356
+(ReadLabel==1) (MRST==1)  =>  L <: H     ; dFsmState <= IFSM_IDLE @mem22.v:356
+(MRST==1)  =>  L <: dTagRamWe     ; no-sensitive-upgrade check dTagRamWe <= 0 @mem22.v:359
+(MRST==1) (dTagRamWe==0)  =>  L <: dTagRamWe     ; dTagRamWe <= 0 @mem22.v:359
+(dStateWay==2) (MRST==1)  =>  L <: H     ; dStateRamWe <= 0 @mem22.v:360
+(dStateWay==3) (MRST==1)  =>  L <: H     ; dStateRamWe <= 0 @mem22.v:360
+(dStateWay==1) (MRST==1)  =>  L <: L     ; dStateRamWe <= 0 @mem22.v:360
+(dStateWay==0) (MRST==1)  =>  L <: L     ; dStateRamWe <= 0 @mem22.v:360
+(dStateWay==2) (MRST==1)  =>  L <: H     ; dStateRamIn <= 0 @mem22.v:361
+(dStateWay==3) (MRST==1)  =>  L <: H     ; dStateRamIn <= 0 @mem22.v:361
+(dStateWay==1) (MRST==1)  =>  L <: L     ; dStateRamIn <= 0 @mem22.v:361
+(dStateWay==0) (MRST==1)  =>  L <: L     ; dStateRamIn <= 0 @mem22.v:361
+(MRST==1)  =>  L <: dDataRamWe     ; no-sensitive-upgrade check dDataRamWe <= 0 @mem22.v:362
+(MRST==1) (dDataRamWe==0)  =>  L <: dDataRamWe     ; dDataRamWe <= 0 @mem22.v:362
+(MRST==1)  =>  L <: dOffset     ; no-sensitive-upgrade check dOffset <= {3{0}} @mem22.v:363
+(MRST==1)  =>  L <: dOffset     ; dOffset <= {3{0}} @mem22.v:363
+(MRST==1)  =>  L <: H     ; dDataRamIn <= 0 @mem22.v:364
+(MRST==1)  =>  L <: dMemRead     ; no-sensitive-upgrade check dMemRead <= 0 @mem22.v:367
+(MRST==1) (dMemRead==0)  =>  L <: dMemRead     ; dMemRead <= 0 @mem22.v:367
+(MRST==1)  =>  L <: dMemWrite     ; no-sensitive-upgrade check dMemWrite <= 0 @mem22.v:368
+(dMemWrite==0) (MRST==1)  =>  L <: dMemWrite     ; dMemWrite <= 0 @mem22.v:368
+(dReadWay==2) (MRST==1)  =>  L <: H     ; dMemAddr <= 0 @mem22.v:369
+(dReadWay==3) (MRST==1)  =>  L <: H     ; dMemAddr <= 0 @mem22.v:369
+(dReadWay==1) (MRST==1)  =>  L <: L     ; dMemAddr <= 0 @mem22.v:369
+(dReadWay==0) (MRST==1)  =>  L <: L     ; dMemAddr <= 0 @mem22.v:369
+(MRST==1)  =>  L <: BusSel     ; no-sensitive-upgrade check BusSel <= 0 @mem22.v:372
+(BusSel==0) (MRST==1)  =>  L <: BusSel     ; BusSel <= 0 @mem22.v:372
+(MRST==1)  =>  L <: H     ; CPU.numDMisses <= 0 @mem22.v:376
+(ReadLabel==0) (dFsmState==DFSM_WRITEBACK) (Not(MRST==1)) (dOffset==7)  =>  (join dOffset L) <: L     ; dFsmState <= DFSM_IDLE @mem22.v:387
+(ReadLabel==1) (dFsmState==DFSM_WRITEBACK) (Not(MRST==1)) (dOffset==7)  =>  (join dOffset H) <: H     ; dFsmState <= DFSM_IDLE @mem22.v:387
+(ReadLabel==0) (dFsmState==DFSM_WRITEBACK) (Not(MRST==1)) (dOffset==7)  =>  (join dOffset L) <: dMemWrite     ; no-sensitive-upgrade check dMemWrite <= 0 @mem22.v:390
+(ReadLabel==1) (dFsmState==DFSM_WRITEBACK) (Not(MRST==1)) (dOffset==7)  =>  (join dOffset H) <: dMemWrite     ; no-sensitive-upgrade check dMemWrite <= 0 @mem22.v:390
+(ReadLabel==0) (dFsmState==DFSM_WRITEBACK) (Not(MRST==1)) (dOffset==7) (dMemWrite==0)  =>  (join dOffset L) <: dMemWrite     ; dMemWrite <= 0 @mem22.v:390
+(ReadLabel==1) (dFsmState==DFSM_WRITEBACK) (Not(MRST==1)) (dOffset==7) (dMemWrite==0)  =>  (join dOffset H) <: dMemWrite     ; dMemWrite <= 0 @mem22.v:390
+(ReadLabel==0) (dFsmState==DFSM_WRITEBACK) (Not(MRST==1)) (dOffset==7)  =>  (join dOffset L) <: BusSel     ; no-sensitive-upgrade check BusSel <= 0 @mem22.v:391
+(ReadLabel==1) (dFsmState==DFSM_WRITEBACK) (Not(MRST==1)) (dOffset==7)  =>  (join dOffset H) <: BusSel     ; no-sensitive-upgrade check BusSel <= 0 @mem22.v:391
+(ReadLabel==0) (dFsmState==DFSM_WRITEBACK) (Not(MRST==1)) (dOffset==7) (BusSel==0)  =>  (join dOffset L) <: BusSel     ; BusSel <= 0 @mem22.v:391
+(ReadLabel==1) (dFsmState==DFSM_WRITEBACK) (Not(MRST==1)) (dOffset==7) (BusSel==0)  =>  (join dOffset H) <: BusSel     ; BusSel <= 0 @mem22.v:391
+(ReadLabel==0) (dFsmState==DFSM_WRITEBACK) (Not(MRST==1)) (dOffset==7)  =>  (join dOffset L) <: dOffset     ; no-sensitive-upgrade check dOffset <= {(3)+(1){0}} @mem22.v:392
+(ReadLabel==1) (dFsmState==DFSM_WRITEBACK) (Not(MRST==1)) (dOffset==7)  =>  (join dOffset H) <: dOffset     ; no-sensitive-upgrade check dOffset <= {(3)+(1){0}} @mem22.v:392
+(ReadLabel==0) (dFsmState==DFSM_WRITEBACK) (Not(MRST==1)) (dOffset==7)  =>  (join dOffset L) <: dOffset     ; dOffset <= {(3)+(1){0}} @mem22.v:392
+(ReadLabel==1) (dFsmState==DFSM_WRITEBACK) (Not(MRST==1)) (dOffset==7)  =>  (join dOffset H) <: dOffset     ; dOffset <= {(3)+(1){0}} @mem22.v:392
+(ReadLabel==0) (dFsmState==DFSM_WRITEBACK) (Not(MRST==1)) (Not(dOffset==7))  =>  (join dOffset L) <: nDOffset     ; no-sensitive-upgrade check nDOffset = (dOffset)+(1) @mem22.v:396
+(ReadLabel==1) (dFsmState==DFSM_WRITEBACK) (Not(MRST==1)) (Not(dOffset==7))  =>  (join dOffset H) <: nDOffset     ; no-sensitive-upgrade check nDOffset = (dOffset)+(1) @mem22.v:396
+(ReadLabel==0) (dFsmState==DFSM_WRITEBACK) (Not(MRST==1)) (Not(dOffset==7))  =>  (join dOffset L) <: nDOffset     ; nDOffset = (dOffset)+(1) @mem22.v:396
+(ReadLabel==1) (dFsmState==DFSM_WRITEBACK) (Not(MRST==1)) (Not(dOffset==7))  =>  (join dOffset H) <: nDOffset     ; nDOffset = (dOffset)+(1) @mem22.v:396
+(ReadLabel==0) (dFsmState==DFSM_WRITEBACK) (Not(MRST==1)) (Not(dOffset==7))  =>  (join dOffset L) <: dOffset     ; no-sensitive-upgrade check dOffset <= nDOffset @mem22.v:397
+(ReadLabel==1) (dFsmState==DFSM_WRITEBACK) (Not(MRST==1)) (Not(dOffset==7))  =>  (join dOffset H) <: dOffset     ; no-sensitive-upgrade check dOffset <= nDOffset @mem22.v:397
+(ReadLabel==0) (dFsmState==DFSM_WRITEBACK) (Not(MRST==1)) (Not(dOffset==7)) (dOffset==nDOffset)  =>  (join dOffset L) <: dOffset     ; dOffset <= nDOffset @mem22.v:397
+(ReadLabel==1) (dFsmState==DFSM_WRITEBACK) (Not(MRST==1)) (Not(dOffset==7)) (dOffset==nDOffset)  =>  (join dOffset H) <: dOffset     ; dOffset <= nDOffset @mem22.v:397
+(ReadLabel==0) (dReadWay==2) (dFsmState==DFSM_WRITEBACK) (Not(MRST==1)) (Not(dOffset==7)) (Or (dReadWay==0 , dReadWay==1))  =>  (join (join (join dTagRamOutLow rMAR) nDOffset) (join dReadWay (join dOffset L))) <: H     ; dMemAddr <= {dTagRamOutLow[dReadWay[0]], rMAR[12:5], nDOffset[(3)-(1):0], 0} @mem22.v:402
+(ReadLabel==1) (dReadWay==2) (dFsmState==DFSM_WRITEBACK) (Not(MRST==1)) (Not(dOffset==7)) (Or (dReadWay==0 , dReadWay==1))  =>  (join (join (join dTagRamOutLow rMAR) nDOffset) (join dReadWay (join dOffset H))) <: H     ; dMemAddr <= {dTagRamOutLow[dReadWay[0]], rMAR[12:5], nDOffset[(3)-(1):0], 0} @mem22.v:402
+(ReadLabel==0) (dReadWay==3) (dFsmState==DFSM_WRITEBACK) (Not(MRST==1)) (Not(dOffset==7)) (Or (dReadWay==0 , dReadWay==1))  =>  (join (join (join dTagRamOutLow rMAR) nDOffset) (join dReadWay (join dOffset L))) <: H     ; dMemAddr <= {dTagRamOutLow[dReadWay[0]], rMAR[12:5], nDOffset[(3)-(1):0], 0} @mem22.v:402
+(ReadLabel==1) (dReadWay==3) (dFsmState==DFSM_WRITEBACK) (Not(MRST==1)) (Not(dOffset==7)) (Or (dReadWay==0 , dReadWay==1))  =>  (join (join (join dTagRamOutLow rMAR) nDOffset) (join dReadWay (join dOffset H))) <: H     ; dMemAddr <= {dTagRamOutLow[dReadWay[0]], rMAR[12:5], nDOffset[(3)-(1):0], 0} @mem22.v:402
+(ReadLabel==0) (dReadWay==1) (dFsmState==DFSM_WRITEBACK) (Not(MRST==1)) (Not(dOffset==7)) (Or (dReadWay==0 , dReadWay==1))  =>  (join (join (join dTagRamOutLow rMAR) nDOffset) (join dReadWay (join dOffset L))) <: L     ; dMemAddr <= {dTagRamOutLow[dReadWay[0]], rMAR[12:5], nDOffset[(3)-(1):0], 0} @mem22.v:402
+(ReadLabel==1) (dReadWay==1) (dFsmState==DFSM_WRITEBACK) (Not(MRST==1)) (Not(dOffset==7)) (Or (dReadWay==0 , dReadWay==1))  =>  (join (join (join dTagRamOutLow rMAR) nDOffset) (join dReadWay (join dOffset H))) <: L     ; dMemAddr <= {dTagRamOutLow[dReadWay[0]], rMAR[12:5], nDOffset[(3)-(1):0], 0} @mem22.v:402
+(ReadLabel==0) (dReadWay==0) (dFsmState==DFSM_WRITEBACK) (Not(MRST==1)) (Not(dOffset==7)) (Or (dReadWay==0 , dReadWay==1))  =>  (join (join (join dTagRamOutLow rMAR) nDOffset) (join dReadWay (join dOffset L))) <: L     ; dMemAddr <= {dTagRamOutLow[dReadWay[0]], rMAR[12:5], nDOffset[(3)-(1):0], 0} @mem22.v:402
+(ReadLabel==1) (dReadWay==0) (dFsmState==DFSM_WRITEBACK) (Not(MRST==1)) (Not(dOffset==7)) (Or (dReadWay==0 , dReadWay==1))  =>  (join (join (join dTagRamOutLow rMAR) nDOffset) (join dReadWay (join dOffset H))) <: L     ; dMemAddr <= {dTagRamOutLow[dReadWay[0]], rMAR[12:5], nDOffset[(3)-(1):0], 0} @mem22.v:402
+(dReadWay==2) (dFsmState==DFSM_WRITEBACK) (Not(MRST==1)) (Not(dOffset==7)) (ReadLabel==1) (Not(Or (dReadWay==0 , dReadWay==1)))  =>  H <: H     ; dMemAddr <= {dTagRamOutHigh[dReadWay[0]], rMAR[12:5], nDOffset[(3)-(1):0], 0} @mem22.v:406
+(dReadWay==3) (dFsmState==DFSM_WRITEBACK) (Not(MRST==1)) (Not(dOffset==7)) (ReadLabel==1) (Not(Or (dReadWay==0 , dReadWay==1)))  =>  H <: H     ; dMemAddr <= {dTagRamOutHigh[dReadWay[0]], rMAR[12:5], nDOffset[(3)-(1):0], 0} @mem22.v:406
+(dReadWay==1) (dFsmState==DFSM_WRITEBACK) (Not(MRST==1)) (Not(dOffset==7)) (ReadLabel==1) (Not(Or (dReadWay==0 , dReadWay==1)))  =>  H <: L     ; dMemAddr <= {dTagRamOutHigh[dReadWay[0]], rMAR[12:5], nDOffset[(3)-(1):0], 0} @mem22.v:406
+(dReadWay==0) (dFsmState==DFSM_WRITEBACK) (Not(MRST==1)) (Not(dOffset==7)) (ReadLabel==1) (Not(Or (dReadWay==0 , dReadWay==1)))  =>  H <: L     ; dMemAddr <= {dTagRamOutHigh[dReadWay[0]], rMAR[12:5], nDOffset[(3)-(1):0], 0} @mem22.v:406
+(ReadLabel==0) (dStateWay==2) (dFsmState==DFSM_WRITEBACK) (Not(MRST==1)) (Not(dOffset==7))  =>  (join dOffset (join dOffset L)) <: H     ; dStateRamWe <= dOffset==(7)-(1) @mem22.v:411
+(ReadLabel==1) (dStateWay==2) (dFsmState==DFSM_WRITEBACK) (Not(MRST==1)) (Not(dOffset==7))  =>  (join dOffset (join dOffset H)) <: H     ; dStateRamWe <= dOffset==(7)-(1) @mem22.v:411
+(ReadLabel==0) (dStateWay==3) (dFsmState==DFSM_WRITEBACK) (Not(MRST==1)) (Not(dOffset==7))  =>  (join dOffset (join dOffset L)) <: H     ; dStateRamWe <= dOffset==(7)-(1) @mem22.v:411
+(ReadLabel==1) (dStateWay==3) (dFsmState==DFSM_WRITEBACK) (Not(MRST==1)) (Not(dOffset==7))  =>  (join dOffset (join dOffset H)) <: H     ; dStateRamWe <= dOffset==(7)-(1) @mem22.v:411
+(ReadLabel==0) (dStateWay==1) (dFsmState==DFSM_WRITEBACK) (Not(MRST==1)) (Not(dOffset==7))  =>  (join dOffset (join dOffset L)) <: L     ; dStateRamWe <= dOffset==(7)-(1) @mem22.v:411
+(ReadLabel==1) (dStateWay==1) (dFsmState==DFSM_WRITEBACK) (Not(MRST==1)) (Not(dOffset==7))  =>  (join dOffset (join dOffset H)) <: L     ; dStateRamWe <= dOffset==(7)-(1) @mem22.v:411
+(ReadLabel==0) (dStateWay==0) (dFsmState==DFSM_WRITEBACK) (Not(MRST==1)) (Not(dOffset==7))  =>  (join dOffset (join dOffset L)) <: L     ; dStateRamWe <= dOffset==(7)-(1) @mem22.v:411
+(ReadLabel==1) (dStateWay==0) (dFsmState==DFSM_WRITEBACK) (Not(MRST==1)) (Not(dOffset==7))  =>  (join dOffset (join dOffset H)) <: L     ; dStateRamWe <= dOffset==(7)-(1) @mem22.v:411
+(ReadLabel==0) (dStateWay==2) (dFsmState==DFSM_WRITEBACK) (Not(MRST==1)) (Not(dOffset==7))  =>  (join dOffset L) <: H     ; dStateRamIn <= 1 @mem22.v:412
+(ReadLabel==1) (dStateWay==2) (dFsmState==DFSM_WRITEBACK) (Not(MRST==1)) (Not(dOffset==7))  =>  (join dOffset H) <: H     ; dStateRamIn <= 1 @mem22.v:412
+(ReadLabel==0) (dStateWay==3) (dFsmState==DFSM_WRITEBACK) (Not(MRST==1)) (Not(dOffset==7))  =>  (join dOffset L) <: H     ; dStateRamIn <= 1 @mem22.v:412
+(ReadLabel==1) (dStateWay==3) (dFsmState==DFSM_WRITEBACK) (Not(MRST==1)) (Not(dOffset==7))  =>  (join dOffset H) <: H     ; dStateRamIn <= 1 @mem22.v:412
+(ReadLabel==0) (dStateWay==1) (dFsmState==DFSM_WRITEBACK) (Not(MRST==1)) (Not(dOffset==7))  =>  (join dOffset L) <: L     ; dStateRamIn <= 1 @mem22.v:412
+(ReadLabel==1) (dStateWay==1) (dFsmState==DFSM_WRITEBACK) (Not(MRST==1)) (Not(dOffset==7))  =>  (join dOffset H) <: L     ; dStateRamIn <= 1 @mem22.v:412
+(ReadLabel==0) (dStateWay==0) (dFsmState==DFSM_WRITEBACK) (Not(MRST==1)) (Not(dOffset==7))  =>  (join dOffset L) <: L     ; dStateRamIn <= 1 @mem22.v:412
+(ReadLabel==1) (dStateWay==0) (dFsmState==DFSM_WRITEBACK) (Not(MRST==1)) (Not(dOffset==7))  =>  (join dOffset H) <: L     ; dStateRamIn <= 1 @mem22.v:412

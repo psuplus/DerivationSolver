@@ -1,0 +1,21 @@
+; assertions to be verified
+(UseImm==1) (Y==Imm)  =>  (join Imm (join UseImm (join (join (join (join RSbus RTbus) Imm) SEL) UseImm))) <: Y     ; Y = Imm @alu.v:40
+(Y==RSbus) (Not(UseImm==1))  =>  (join RSbus (join SEL (join UseImm (join (join (join (join RSbus RTbus) Imm) SEL) UseImm)))) <: Y     ; Y = RSbus @alu.v:40
+(Not(UseImm==1)) (Y==RTbus)  =>  (join RTbus (join SEL (join UseImm (join (join (join (join RSbus RTbus) Imm) SEL) UseImm)))) <: Y     ; Y = RTbus @alu.v:40
+(UseImm==1)  =>  (join Imm (join UseImm (join (join (join (join RSbus RTbus) Imm) SEL) UseImm))) <: SA     ; SA = Imm[10:6] @alu.v:41
+(Not(UseImm==1))  =>  (join RSbus (join UseImm (join (join (join (join RSbus RTbus) Imm) SEL) UseImm))) <: SA     ; SA = RSbus[4:0] @alu.v:41
+(SEL==1)  =>  (join (join RSbus Y) (join SEL (join (join (join (join RSbus RTbus) Imm) SEL) UseImm))) <: ALUout     ; ALUout = (RSbus)+(Y) @alu.v:44
+(SEL==2)  =>  (join (join RSbus Y) (join SEL (join (join (join (join RSbus RTbus) Imm) SEL) UseImm))) <: ALUout     ; ALUout = (RSbus)&(Y) @alu.v:45
+(SEL==4)  =>  (join (join RSbus Y) (join SEL (join (join (join (join RSbus RTbus) Imm) SEL) UseImm))) <: ALUout     ; ALUout = (RSbus)^(Y) @alu.v:46
+(SEL==8)  =>  (join (join RSbus Y) (join SEL (join (join (join (join RSbus RTbus) Imm) SEL) UseImm))) <: ALUout     ; ALUout = (RSbus)|(Y) @alu.v:47
+(SEL==16)  =>  (join (join RSbus Y) (join SEL (join (join (join (join RSbus RTbus) Imm) SEL) UseImm))) <: ALUout     ; ALUout = ~((RSbus)|(Y)) @alu.v:48
+(SEL==33)  =>  (join (join RSbus Y) (join SEL (join (join (join (join RSbus RTbus) Imm) SEL) UseImm))) <: ALUout     ; ALUout = (RSbus)-(Y) @alu.v:49
+(SEL==64) (ALUout==1)  =>  (join (join RSbus Y) (join SEL (join (join (join (join RSbus RTbus) Imm) SEL) UseImm))) <: ALUout     ; ALUout = 1 @alu.v:51
+(SEL==64) (ALUout==0)  =>  (join (join RSbus Y) (join SEL (join (join (join (join RSbus RTbus) Imm) SEL) UseImm))) <: ALUout     ; ALUout = 0 @alu.v:51
+(SEL==96)  =>  (join RSbus (join (join RSbus Y) (join SEL (join (join (join (join RSbus RTbus) Imm) SEL) UseImm)))) <: ALUout     ; ALUout = RSbus[31] @alu.v:52
+(SEL==96) (ALUout==1)  =>  (join (join RSbus Y) (join (join RSbus Y) (join SEL (join (join (join (join RSbus RTbus) Imm) SEL) UseImm)))) <: ALUout     ; ALUout = 1 @alu.v:52
+(SEL==96) (ALUout==0)  =>  (join (join RSbus Y) (join (join RSbus Y) (join SEL (join (join (join (join RSbus RTbus) Imm) SEL) UseImm)))) <: ALUout     ; ALUout = 0 @alu.v:52
+(SEL==129)  =>  (join (join RTbus SA) (join SEL (join (join (join (join RSbus RTbus) Imm) SEL) UseImm))) <: ALUout     ; ALUout = ({{32{RTbus[31]}}, RTbus})>>(SA) @alu.v:53
+(SEL==130)  =>  (join (join RTbus SA) (join SEL (join (join (join (join RSbus RTbus) Imm) SEL) UseImm))) <: ALUout     ; ALUout = (RTbus)>>(SA) @alu.v:54
+(SEL==132)  =>  (join (join RTbus SA) (join SEL (join (join (join (join RSbus RTbus) Imm) SEL) UseImm))) <: ALUout     ; ALUout = (RTbus)<<(SA) @alu.v:55
+(ALUout==-1)  =>  (join SEL (join (join (join (join RSbus RTbus) Imm) SEL) UseImm)) <: ALUout     ; ALUout = -1 @alu.v:56

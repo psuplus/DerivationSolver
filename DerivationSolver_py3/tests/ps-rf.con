@@ -1,0 +1,4 @@
+; assertions to be verified
+ (join RD (join RDaddr WCLK)) <: RAM     ; RAM[RDaddr] <= RD @rf.v:63
+ RAM <: RS     ; RS = RAM[RSaddr] @rf.v:69
+ RAM <: RT     ; RT = RAM[RTaddr] @rf.v:74

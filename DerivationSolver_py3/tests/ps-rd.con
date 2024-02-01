@@ -1,0 +1,126 @@
+; assertions to be verified
+ I1 <: RSaddr     ; RSaddr = I1[25:21] @rd.v:54
+ I1 <: RTaddr     ; RTaddr = I1[20:16] @rd.v:55
+ I1 <: RDaddr     ; RDaddr = I1[20:16] @rd.v:61
+ I1 <: RDaddr     ; RDaddr = I1[20:16] @rd.v:62
+ I1 <: RDaddr     ; RDaddr = I1[20:16] @rd.v:63
+ I1 <: RDaddr     ; RDaddr = I1[20:16] @rd.v:64
+ I1 <: RDaddr     ; RDaddr = I1[20:16] @rd.v:65
+ I1 <: RDaddr     ; RDaddr = I1[20:16] @rd.v:68
+ I1 <: RDaddr     ; RDaddr = I1[20:16] @rd.v:69
+ I1 <: RDaddr     ; RDaddr = I1[20:16] @rd.v:70
+ I1 <: RDaddr     ; RDaddr = I1[20:16] @rd.v:71
+ I1 <: RDaddr     ; RDaddr = I1[20:16] @rd.v:72
+ I1 <: RDaddr     ; RDaddr = I1[20:16] @rd.v:73
+ I1 <: RDaddr     ; RDaddr = I1[20:16] @rd.v:74
+ I1 <: RDaddr     ; RDaddr = I1[20:16] @rd.v:75
+ I1 <: RDaddr     ; RDaddr = I1[15:11] @rd.v:78
+ I1 <: RDaddr     ; RDaddr = I1[15:11] @rd.v:79
+ I1 <: RDaddr     ; RDaddr = I1[15:11] @rd.v:80
+ I1 <: RDaddr     ; RDaddr = I1[15:11] @rd.v:81
+ I1 <: RDaddr     ; RDaddr = I1[15:11] @rd.v:82
+ I1 <: RDaddr     ; RDaddr = I1[15:11] @rd.v:83
+ I1 <: RDaddr     ; RDaddr = I1[15:11] @rd.v:84
+ I1 <: RDaddr     ; RDaddr = I1[15:11] @rd.v:85
+ I1 <: RDaddr     ; RDaddr = I1[15:11] @rd.v:86
+ I1 <: RDaddr     ; RDaddr = I1[15:11] @rd.v:87
+ I1 <: RDaddr     ; RDaddr = I1[15:11] @rd.v:91
+ I1 <: RDaddr     ; RDaddr = I1[15:11] @rd.v:92
+ I1 <: RDaddr     ; RDaddr = I1[15:11] @rd.v:93
+ I1 <: RDaddr     ; RDaddr = I1[15:11] @rd.v:94
+ I1 <: RDaddr     ; RDaddr = I1[15:11] @rd.v:95
+ I1 <: RDaddr     ; RDaddr = I1[15:11] @rd.v:96
+ I1 <: RDaddr     ; RDaddr = 31 @rd.v:99
+ I1 <: RDaddr     ; RDaddr = I1[15:11] @rd.v:100
+ I1 <: RDaddr     ; RDaddr = I1[15:11] @rd.v:103
+ I1 <: RDaddr     ; RDaddr = I1[15:11] @rd.v:104
+ I1 <: RDaddr     ; RDaddr = 0 @rd.v:107
+ I1 <: Imm     ; Imm = {{16{I1[15]}}, I1[15:0]} @rd.v:115
+ I1 <: Imm     ; Imm = {{16{I1[15]}}, I1[15:0]} @rd.v:116
+ I1 <: Imm     ; Imm = {{16{I1[15]}}, I1[15:0]} @rd.v:117
+ I1 <: Imm     ; Imm = {{16{I1[15]}}, I1[15:0]} @rd.v:118
+ I1 <: Imm     ; Imm = {{16{I1[15]}}, I1[15:0]} @rd.v:119
+ I1 <: Imm     ; Imm = {{16{I1[15]}}, I1[15:0]} @rd.v:120
+ I1 <: Imm     ; Imm = {{16{I1[15]}}, I1[15:0]} @rd.v:121
+ I1 <: Imm     ; Imm = {{16{I1[15]}}, I1[15:0]} @rd.v:122
+ I1 <: Imm     ; Imm = {{16{I1[15]}}, I1[15:0]} @rd.v:125
+ I1 <: Imm     ; Imm = {{16{I1[15]}}, I1[15:0]} @rd.v:126
+ I1 <: Imm     ; Imm = {{16{I1[15]}}, I1[15:0]} @rd.v:127
+ I1 <: Imm     ; Imm = {{16{I1[15]}}, I1[15:0]} @rd.v:128
+ I1 <: Imm     ; Imm = {0, I1[15:0]} @rd.v:131
+ I1 <: Imm     ; Imm = {0, I1[15:0]} @rd.v:132
+ I1 <: Imm     ; Imm = {0, I1[15:0]} @rd.v:133
+ I1 <: Imm     ; Imm = {0, I1[15:0]} @rd.v:134
+ I1 <: Imm     ; Imm = {0, I1[15:0]} @rd.v:135
+ I1 <: Imm     ; Imm = {I1[15:0], 0} @rd.v:138
+ I1 <: Imm     ; Imm = -1 @rd.v:140
+ I1 <: L     ; instOK = 1 @rd.v:145
+ I1 <: L     ; instOK = 1 @rd.v:146
+ I1 <: L     ; instOK = 1 @rd.v:147
+ I1 <: L     ; instOK = 1 @rd.v:148
+ I1 <: L     ; instOK = 1 @rd.v:149
+ I1 <: L     ; instOK = 1 @rd.v:150
+ I1 <: L     ; instOK = 1 @rd.v:151
+ I1 <: L     ; instOK = 1 @rd.v:152
+ I1 <: L     ; instOK = 1 @rd.v:153
+ I1 <: L     ; instOK = 1 @rd.v:154
+ I1 <: L     ; instOK = 1 @rd.v:155
+ I1 <: L     ; instOK = 1 @rd.v:156
+ I1 <: L     ; instOK = 1 @rd.v:157
+ I1 <: L     ; instOK = 1 @rd.v:158
+ I1 <: L     ; instOK = 1 @rd.v:159
+ I1 <: L     ; instOK = 1 @rd.v:160
+ I1 <: L     ; instOK = 1 @rd.v:161
+ I1 <: L     ; instOK = 1 @rd.v:162
+ I1 <: L     ; instOK = 1 @rd.v:163
+ I1 <: L     ; instOK = 1 @rd.v:164
+ I1 <: L     ; instOK = 1 @rd.v:166
+ I1 <: L     ; instOK = 1 @rd.v:167
+ I1 <: L     ; instOK = 1 @rd.v:168
+ I1 <: L     ; instOK = 1 @rd.v:169
+ I1 <: L     ; instOK = 1 @rd.v:170
+ I1 <: L     ; instOK = 1 @rd.v:171
+ I1 <: L     ; instOK = 1 @rd.v:173
+ I1 <: L     ; instOK = 1 @rd.v:174
+ I1 <: L     ; instOK = 1 @rd.v:177
+ I1 <: L     ; instOK = 1 @rd.v:178
+ I1 <: L     ; instOK = 1 @rd.v:183
+ I1 <: L     ; instOK = 1 @rd.v:184
+ I1 <: L     ; instOK = 1 @rd.v:185
+ I1 <: L     ; instOK = 1 @rd.v:186
+ I1 <: L     ; instOK = 1 @rd.v:187
+ I1 <: L     ; instOK = 1 @rd.v:188
+ I1 <: L     ; instOK = 1 @rd.v:189
+ I1 <: L     ; instOK = 1 @rd.v:190
+ I1 <: L     ; instOK = 1 @rd.v:191
+ I1 <: L     ; instOK = 1 @rd.v:192
+ I1 <: L     ; instOK = 1 @rd.v:193
+ I1 <: L     ; instOK = 1 @rd.v:194
+ I1 <: L     ; instOK = 1 @rd.v:195
+ I1 <: L     ; instOK = 1 @rd.v:196
+ I1 <: L     ; instOK = 1 @rd.v:197
+ I1 <: L     ; instOK = 1 @rd.v:198
+ I1 <: L     ; instOK = 1 @rd.v:199
+ I1 <: L     ; instOK = 1 @rd.v:200
+ I1 <: L     ; instOK = 1 @rd.v:201
+ I1 <: L     ; instOK = 1 @rd.v:202
+ I1 <: L     ; instOK = 1 @rd.v:203
+ I1 <: L     ; instOK = 1 @rd.v:204
+ I1 <: L     ; instOK = 1 @rd.v:209
+ I1 <: L     ; instOK = 1 @rd.v:210
+ I1 <: L     ; instOK = 1 @rd.v:211
+ I1 <: instIsSyscall     ; instIsSyscall = 1 @rd.v:228
+ I1 <: instIsSyscall     ; instIsSyscall = 1 @rd.v:229
+ I1 <: instIsSyscall     ; instIsSyscall = 0 @rd.v:230
+(MRST==1)  =>  (join MRST I1) <: ReadLabel     ; no-sensitive-upgrade check ReadLabel <= 0 @rd.v:234
+(MRST==1)  =>  (join MRST I1) <: ReadLabel     ; ReadLabel <= 0 @rd.v:234
+(MRST==1)  =>  (join MRST I1) <: WriteLabel     ; no-sensitive-upgrade check WriteLabel <= 0 @rd.v:235
+(MRST==1)  =>  (join MRST I1) <: WriteLabel     ; WriteLabel <= 0 @rd.v:235
+(Or (I2==536870912 , I2==536870913)) (Not(MRST==1))  =>  (join I2 (join I2 (join MRST I1))) <: ReadLabel     ; no-sensitive-upgrade check ReadLabel = 1 @rd.v:238
+(Or (I2==536870912 , I2==536870913)) (Not(MRST==1))  =>  (join I2 (join I2 (join MRST I1))) <: ReadLabel     ; ReadLabel = 1 @rd.v:238
+(Or (I2==536870912 , I2==536870913)) (Not(MRST==1))  =>  (join I2 (join I2 (join MRST I1))) <: ReadLabel     ; no-sensitive-upgrade check ReadLabel = 0 @rd.v:238
+(Or (I2==536870912 , I2==536870913)) (Not(MRST==1))  =>  (join I2 (join I2 (join MRST I1))) <: ReadLabel     ; ReadLabel = 0 @rd.v:238
+(Or (I2==536870912 , I2==536870913)) (Not(MRST==1))  =>  (join I2 (join I2 (join MRST I1))) <: WriteLabel     ; no-sensitive-upgrade check WriteLabel = 1 @rd.v:239
+(Or (I2==536870912 , I2==536870913)) (Not(MRST==1))  =>  (join I2 (join I2 (join MRST I1))) <: WriteLabel     ; WriteLabel = 1 @rd.v:239
+(Or (I2==536870912 , I2==536870913)) (Not(MRST==1))  =>  (join I2 (join I2 (join MRST I1))) <: WriteLabel     ; no-sensitive-upgrade check WriteLabel = 0 @rd.v:239
+(Or (I2==536870912 , I2==536870913)) (Not(MRST==1))  =>  (join I2 (join I2 (join MRST I1))) <: WriteLabel     ; WriteLabel = 0 @rd.v:239

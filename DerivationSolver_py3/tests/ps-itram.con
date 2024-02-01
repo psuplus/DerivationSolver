@@ -1,0 +1,23 @@
+; assertions to be verified
+(way==2) (way==0)  =>  (join din (join H (join (join we en) clk))) <: L     ; mem0[index] = din @itram.v:64
+(way==3) (way==0)  =>  (join din (join H (join (join we en) clk))) <: L     ; mem0[index] = din @itram.v:64
+(way==0) (way==0)  =>  (join din (join L (join (join we en) clk))) <: L     ; mem0[index] = din @itram.v:64
+(way==1) (way==0)  =>  (join din (join L (join (join we en) clk))) <: L     ; mem0[index] = din @itram.v:64
+(way==2) (way==1)  =>  (join din (join H (join (join we en) clk))) <: L     ; mem1[index] = din @itram.v:67
+(way==3) (way==1)  =>  (join din (join H (join (join we en) clk))) <: L     ; mem1[index] = din @itram.v:67
+(way==0) (way==1)  =>  (join din (join L (join (join we en) clk))) <: L     ; mem1[index] = din @itram.v:67
+(way==1) (way==1)  =>  (join din (join L (join (join we en) clk))) <: L     ; mem1[index] = din @itram.v:67
+(way==2) (way==2)  =>  (join din (join H (join (join we en) clk))) <: H     ; mem2[index] = din @itram.v:70
+(way==3) (way==2)  =>  (join din (join H (join (join we en) clk))) <: H     ; mem2[index] = din @itram.v:70
+(way==0) (way==2)  =>  (join din (join L (join (join we en) clk))) <: H     ; mem2[index] = din @itram.v:70
+(way==1) (way==2)  =>  (join din (join L (join (join we en) clk))) <: H     ; mem2[index] = din @itram.v:70
+(way==2) (way==3)  =>  (join din (join H (join (join we en) clk))) <: H     ; mem3[index] = din @itram.v:73
+(way==3) (way==3)  =>  (join din (join H (join (join we en) clk))) <: H     ; mem3[index] = din @itram.v:73
+(way==0) (way==3)  =>  (join din (join L (join (join we en) clk))) <: H     ; mem3[index] = din @itram.v:73
+(way==1) (way==3)  =>  (join din (join L (join (join we en) clk))) <: H     ; mem3[index] = din @itram.v:73
+(ReadLabel==0) (en==1)  =>  en <: L     ; dout0 = mem0[index] @itram.v:81
+(ReadLabel==1) (en==1)  =>  en <: H     ; dout0 = mem0[index] @itram.v:81
+(ReadLabel==0) (en==1)  =>  en <: L     ; dout1 = mem1[index] @itram.v:82
+(ReadLabel==1) (en==1)  =>  en <: H     ; dout1 = mem1[index] @itram.v:82
+(en==1)  =>  H <: H     ; dout2 = mem2[index] @itram.v:83
+(en==1)  =>  H <: H     ; dout3 = mem3[index] @itram.v:84

@@ -1,0 +1,5 @@
+; assertions to be verified
+(addr==0)  =>  (join addr (join (join addr MemRDaddr) RDaddr)) <: BPsel     ; BPsel = 0 @bp.v:24
+(Not(addr==0)) (addr==MemRDaddr)  =>  (join (join addr MemRDaddr) (join addr (join (join addr MemRDaddr) RDaddr))) <: BPsel     ; BPsel = 1 @bp.v:27
+(Not(addr==0)) (Not(addr==MemRDaddr)) (addr==RDaddr)  =>  (join (join addr RDaddr) (join (join addr MemRDaddr) (join addr (join (join addr MemRDaddr) RDaddr)))) <: BPsel     ; BPsel = 2 @bp.v:30
+(Not(addr==0)) (Not(addr==MemRDaddr)) (Not(addr==RDaddr))  =>  (join (join addr RDaddr) (join (join addr MemRDaddr) (join addr (join (join addr MemRDaddr) RDaddr)))) <: BPsel     ; BPsel = 0 @bp.v:33

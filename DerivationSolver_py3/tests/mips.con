@@ -1,0 +1,34 @@
+; assertions to be verified
+(Bus==BusReg)  =>  (join BusReg Write) <: Bus     ; Bus = BusReg @mips.v:151
+(Bus==bzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz)  =>  Write <: Bus     ; Bus = bzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz @mips.v:151
+(MRST==1)  =>  (join MRST CLK) <: Valid     ; no-sensitive-upgrade check Valid <= 0 @mips.v:100
+(Valid==0) (MRST==1)  =>  (join MRST CLK) <: Valid     ; Valid <= 0 @mips.v:100
+(MRST==1)  =>  (join MRST CLK) <: currentWord     ; no-sensitive-upgrade check currentWord <= 0 @mips.v:101
+(MRST==1) (currentWord==0)  =>  (join MRST CLK) <: currentWord     ; currentWord <= 0 @mips.v:101
+(MRST==1)  =>  (join MRST CLK) <: startRead     ; no-sensitive-upgrade check startRead <= 0 @mips.v:102
+(MRST==1) (startRead==0)  =>  (join MRST CLK) <: startRead     ; startRead <= 0 @mips.v:102
+(MRST==1)  =>  (join MRST CLK) <: scheduled     ; no-sensitive-upgrade check scheduled <= 0 @mips.v:103
+(MRST==1) (scheduled==0)  =>  (join MRST CLK) <: scheduled     ; scheduled <= 0 @mips.v:103
+ (join (join Read scheduled) CLK) <: startRead     ; no-sensitive-upgrade check startRead <= 1 @mips.v:107
+(startRead==1)  =>  (join (join Read scheduled) CLK) <: startRead     ; startRead <= 1 @mips.v:107
+ (join (join Read scheduled) CLK) <: scheduled     ; no-sensitive-upgrade check scheduled <= 1 @mips.v:108
+(scheduled==1)  =>  (join (join Read scheduled) CLK) <: scheduled     ; scheduled <= 1 @mips.v:108
+(startRead==1) (Read==1)  =>  (join Read (join startRead CLK)) <: BusReg     ; no-sensitive-upgrade check BusReg <= $load_mm({Addr[31:5], currentWord[2:0], 0}) @mips.v:118
+(startRead==1) (Read==1)  =>  (join Read (join startRead CLK)) <: BusReg     ; BusReg <= $load_mm({Addr[31:5], currentWord[2:0], 0}) @mips.v:118
+(startRead==1) (Valid==1) (Read==1)  =>  (join Read (join startRead CLK)) <: Valid     ; Valid <= 1 @mips.v:119
+(startRead==1) (Read==1) (Not( currentWord==7))  =>  (join currentWord (join Read (join startRead CLK))) <: currentWord     ; no-sensitive-upgrade check currentWord <= (currentWord)+(1) @mips.v:121
+(startRead==1) (Read==1) (Not( currentWord==7))  =>  (join currentWord (join Read (join startRead CLK))) <: currentWord     ; currentWord <= (currentWord)+(1) @mips.v:121
+(startRead==1) (Read==1) (Not(Not( currentWord==7)))  =>  (join currentWord (join Read (join startRead CLK))) <: startRead     ; no-sensitive-upgrade check startRead <= 0 @mips.v:124
+(startRead==1) (Read==1) (startRead==0) (Not(Not( currentWord==7)))  =>  (join currentWord (join Read (join startRead CLK))) <: startRead     ; startRead <= 0 @mips.v:124
+(startRead==1) (Valid==0) (Not(Read==1))  =>  (join Read (join startRead CLK)) <: Valid     ; Valid <= 0 @mips.v:128
+(startRead==1) (Not(Read==1))  =>  (join Read (join startRead CLK)) <: scheduled     ; no-sensitive-upgrade check scheduled <= 0 @mips.v:129
+(startRead==1) (Not(Read==1)) (scheduled==0)  =>  (join Read (join startRead CLK)) <: scheduled     ; scheduled <= 0 @mips.v:129
+(startRead==1) (Not(Read==1))  =>  (join Read (join startRead CLK)) <: startRead     ; no-sensitive-upgrade check startRead <= 0 @mips.v:130
+(startRead==1) (Not(Read==1)) (startRead==0)  =>  (join Read (join startRead CLK)) <: startRead     ; startRead <= 0 @mips.v:130
+(startRead==1) (Not(Read==1))  =>  (join Read (join startRead CLK)) <: currentWord     ; no-sensitive-upgrade check currentWord <= 0 @mips.v:131
+(startRead==1) (Not(Read==1)) (currentWord==0)  =>  (join Read (join startRead CLK)) <: currentWord     ; currentWord <= 0 @mips.v:131
+(Not(startRead==1)) (Valid==0)  =>  (join startRead CLK) <: Valid     ; Valid <= 0 @mips.v:135
+(Not(startRead==1)) (Not( currentWord==0))  =>  (join currentWord (join startRead CLK)) <: scheduled     ; no-sensitive-upgrade check scheduled <= 0 @mips.v:137
+(Not(startRead==1)) (Not( currentWord==0)) (scheduled==0)  =>  (join currentWord (join startRead CLK)) <: scheduled     ; scheduled <= 0 @mips.v:137
+(Not(startRead==1)) (Not( currentWord==0))  =>  (join currentWord (join startRead CLK)) <: currentWord     ; no-sensitive-upgrade check currentWord <= 0 @mips.v:138
+(Not(startRead==1)) (Not( currentWord==0)) (currentWord==0)  =>  (join currentWord (join startRead CLK)) <: currentWord     ; currentWord <= 0 @mips.v:138

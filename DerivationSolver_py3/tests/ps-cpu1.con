@@ -1,0 +1,230 @@
+; assertions to be verified
+ IR2 <: I2     ; Instantiate parameter I2 in module ifcontr @cpu1.v:208
+ QCResult <: QC     ; Instantiate parameter QC in module ifcontr @cpu1.v:208
+ PCsel <: PCsel     ; Instantiate parameter PCsel in module ifcontr @cpu1.v:208
+ PCoffset <: PCoffset     ; Instantiate parameter PCoffset in module ifcontr @cpu1.v:208
+ PCjump <: PCjump     ; Instantiate parameter PCjump in module ifcontr @cpu1.v:208
+ ReadLabel <: ReadLabel     ; Instantiate parameter ReadLabel in module ifcontr @cpu1.v:208
+ WriteLabel <: WriteLabel     ; Instantiate parameter WriteLabel in module ifcontr @cpu1.v:208
+ PC <: Iaddr     ; assign Iaddr = PC @cpu1.v:225
+ (join PC2 PCoffset) <: PCbr     ; assign PCbr = ((PC2)+(4))+(PCoffset) @cpu1.v:226
+ PC <: PCinc     ; assign PCinc = (PC)+(4) @cpu1.v:227
+ (join PC2 PCjump) <: PCjmp     ; assign PCjmp = {PC2[31:28], PCjump, 0} @cpu1.v:228
+ WriteCLK <: WCLK     ; Instantiate parameter WCLK in module rf @cpu1.v:257
+ RSaddr <: RSaddr     ; Instantiate parameter RSaddr in module rf @cpu1.v:257
+ RTaddr <: RTaddr     ; Instantiate parameter RTaddr in module rf @cpu1.v:257
+ wbRDaddr <: RDaddr     ; Instantiate parameter RDaddr in module rf @cpu1.v:257
+ RS <: RS     ; Instantiate parameter RS in module rf @cpu1.v:257
+ RT <: RT     ; Instantiate parameter RT in module rf @cpu1.v:257
+ RDbus <: RD     ; Instantiate parameter RD in module rf @cpu1.v:257
+ L <: MRST     ; Instantiate parameter MRST in module rd @cpu1.v:268
+ IR1 <: I1     ; Instantiate parameter I1 in module rd @cpu1.v:268
+ IR4 <: I2     ; Instantiate parameter I2 in module rd @cpu1.v:268
+ RSaddr <: RSaddr     ; Instantiate parameter RSaddr in module rd @cpu1.v:268
+ RTaddr <: RTaddr     ; Instantiate parameter RTaddr in module rd @cpu1.v:268
+ RDaddr <: RDaddr     ; Instantiate parameter RDaddr in module rd @cpu1.v:268
+ Imm <: Imm     ; Instantiate parameter Imm in module rd @cpu1.v:268
+ instIsSyscall <: instIsSyscall     ; Instantiate parameter instIsSyscall in module rd @cpu1.v:268
+ ReadLabel <: ReadLabel     ; Instantiate parameter ReadLabel in module rd @cpu1.v:268
+ WriteLabel <: WriteLabel     ; Instantiate parameter WriteLabel in module rd @cpu1.v:268
+ L <: WriteCLK     ; assign WriteCLK = CLK==0 @cpu1.v:283
+ (join (join (join instIsSyscall rInstIsSyscall) rrInstIsSyscall) pipeInhibit) <: decodeStall     ; assign decodeStall = (((instIsSyscall)|(rInstIsSyscall))&(~(rrInstIsSyscall)))&(~(pipeInhibit)) @cpu1.v:310
+ (join mem_pipeInhibit MD_ready) <: pipeInhibit     ; assign pipeInhibit = (mem_pipeInhibit)|(~(MD_ready)) @cpu1.v:311
+ IR2 <: addr     ; Instantiate parameter addr in module bpcontr @cpu1.v:318
+(ReadLabel==1)  =>  H <: MemRDaddr     ; Instantiate parameter MemRDaddr in module bpcontr @cpu1.v:318
+(ReadLabel==0)  =>  L <: MemRDaddr     ; Instantiate parameter MemRDaddr in module bpcontr @cpu1.v:318
+ wbRDaddr <: RDaddr     ; Instantiate parameter RDaddr in module bpcontr @cpu1.v:318
+ BPsel <: RSsel     ; Instantiate parameter BPsel in module bpcontr @cpu1.v:318
+ ReadLabel <: ReadLabel     ; Instantiate parameter ReadLabel in module bpcontr @cpu1.v:318
+ WriteLabel <: WriteLabel     ; Instantiate parameter WriteLabel in module bpcontr @cpu1.v:318
+ IR2 <: addr     ; Instantiate parameter addr in module bpcontr @cpu1.v:330
+(ReadLabel==1)  =>  H <: MemRDaddr     ; Instantiate parameter MemRDaddr in module bpcontr @cpu1.v:330
+(ReadLabel==0)  =>  L <: MemRDaddr     ; Instantiate parameter MemRDaddr in module bpcontr @cpu1.v:330
+ wbRDaddr <: RDaddr     ; Instantiate parameter RDaddr in module bpcontr @cpu1.v:330
+ BPsel <: RTsel     ; Instantiate parameter BPsel in module bpcontr @cpu1.v:330
+ ReadLabel <: ReadLabel     ; Instantiate parameter ReadLabel in module bpcontr @cpu1.v:330
+ WriteLabel <: WriteLabel     ; Instantiate parameter WriteLabel in module bpcontr @cpu1.v:330
+(RSsel==0)  =>  (join RSbus RSsel) <: RSbusMuxOut     ; RSbusMuxOut = RSbus @cpu1.v:343
+(Not(RSsel==0))  =>  RSsel <: RSbusMuxOut     ; RSbusMuxOut = 0 @cpu1.v:343
+(RSsel==1)  =>  (join MAR RSsel) <: RSbusMuxOut     ; RSbusMuxOut = MAR @cpu1.v:344
+(Not(RSsel==1))  =>  RSsel <: RSbusMuxOut     ; RSbusMuxOut = 0 @cpu1.v:344
+(RSsel==2)  =>  (join RDbus RSsel) <: RSbusMuxOut     ; RSbusMuxOut = RDbus @cpu1.v:345
+(Not(RSsel==2))  =>  RSsel <: RSbusMuxOut     ; RSbusMuxOut = 0 @cpu1.v:345
+(RTsel==0)  =>  (join RTbus RTsel) <: RTbusMuxOut     ; RTbusMuxOut = RTbus @cpu1.v:350
+(Not(RTsel==0))  =>  RTsel <: RTbusMuxOut     ; RTbusMuxOut = 0 @cpu1.v:350
+(RTsel==1)  =>  (join MAR RTsel) <: RTbusMuxOut     ; RTbusMuxOut = MAR @cpu1.v:351
+(Not(RTsel==1))  =>  RTsel <: RTbusMuxOut     ; RTbusMuxOut = 0 @cpu1.v:351
+(RTsel==2)  =>  (join RDbus RTsel) <: RTbusMuxOut     ; RTbusMuxOut = RDbus @cpu1.v:352
+(Not(RTsel==2))  =>  RTsel <: RTbusMuxOut     ; RTbusMuxOut = 0 @cpu1.v:352
+ IR2 <: I2     ; Instantiate parameter I2 in module ex @cpu1.v:354
+ QCsel <: QCsel     ; Instantiate parameter QCsel in module ex @cpu1.v:354
+ ALUsel <: ALUsel     ; Instantiate parameter ALUsel in module ex @cpu1.v:354
+ UseImm <: UseImm     ; Instantiate parameter UseImm in module ex @cpu1.v:354
+ ReadLabel <: ReadLabel     ; Instantiate parameter ReadLabel in module ex @cpu1.v:354
+ WriteLabel <: WriteLabel     ; Instantiate parameter WriteLabel in module ex @cpu1.v:354
+ RSbusMuxOut <: RSbus     ; Instantiate parameter RSbus in module alu @cpu1.v:364
+ RTbusMuxOut <: RTbus     ; Instantiate parameter RTbus in module alu @cpu1.v:364
+ ImmBus <: Imm     ; Instantiate parameter Imm in module alu @cpu1.v:364
+ UseImm <: UseImm     ; Instantiate parameter UseImm in module alu @cpu1.v:364
+ ALUsel <: SEL     ; Instantiate parameter SEL in module alu @cpu1.v:364
+ ALUout <: preALUout     ; Instantiate parameter ALUout in module alu @cpu1.v:364
+ ReadLabel <: ReadLabel     ; Instantiate parameter ReadLabel in module alu @cpu1.v:364
+ WriteLabel <: WriteLabel     ; Instantiate parameter WriteLabel in module alu @cpu1.v:364
+ RSbusMuxOut <: RSbus     ; Instantiate parameter RSbus in module qc @cpu1.v:377
+ RTbusMuxOut <: RTbus     ; Instantiate parameter RTbus in module qc @cpu1.v:377
+ QCsel <: QCsel     ; Instantiate parameter QCsel in module qc @cpu1.v:377
+ Result <: QCResult     ; Instantiate parameter Result in module qc @cpu1.v:377
+ ReadLabel <: ReadLabel     ; Instantiate parameter ReadLabel in module qc @cpu1.v:377
+ WriteLabel <: WriteLabel     ; Instantiate parameter WriteLabel in module qc @cpu1.v:377
+ IR2 <: iMDtype     ; iMDtype = 4 @cpu1.v:400
+ IR2 <: iMDtype     ; iMDtype = 5 @cpu1.v:401
+ IR2 <: iMDtype     ; iMDtype = 6 @cpu1.v:402
+ IR2 <: iMDtype     ; iMDtype = 7 @cpu1.v:403
+ IR2 <: iMDtype     ; iMDtype = 0 @cpu1.v:403
+ (join LO IR2) <: ALUout     ; ALUout = LO @cpu1.v:407
+ IR2 <: ALUout     ; ALUout = 0 @cpu1.v:407
+ (join HI IR2) <: ALUout     ; ALUout = HI @cpu1.v:408
+ IR2 <: ALUout     ; ALUout = 0 @cpu1.v:408
+ (join preALUout IR2) <: ALUout     ; ALUout = preALUout @cpu1.v:409
+ IR2 <: ALUout     ; ALUout = 0 @cpu1.v:409
+ L <: L     ; Instantiate parameter CLK in module mem @cpu1.v:415
+ L <: L     ; Instantiate parameter MRST in module mem @cpu1.v:415
+ IR3 <: I3     ; Instantiate parameter I3 in module mem @cpu1.v:415
+ MAR <: MAR     ; Instantiate parameter MAR in module mem @cpu1.v:415
+ Valid <: Valid     ; Instantiate parameter Valid in module mem @cpu1.v:415
+ SMDR <: SMDR     ; Instantiate parameter SMDR in module mem @cpu1.v:415
+ Iaddr <: Iaddr     ; Instantiate parameter Iaddr in module mem @cpu1.v:415
+ ReadLabel <: ReadLabel     ; Instantiate parameter ReadLabel in module mem @cpu1.v:415
+ WriteLabel <: WriteLabel     ; Instantiate parameter WriteLabel in module mem @cpu1.v:415
+(Write==0)  =>  Bus <: L     ; Instantiate parameter Bus in module mem @cpu1.v:415
+(Write==1)  =>  Bus <: H     ; Instantiate parameter Bus in module mem @cpu1.v:415
+ Read <: Read     ; Instantiate parameter Read in module mem @cpu1.v:415
+ Write <: Write     ; Instantiate parameter Write in module mem @cpu1.v:415
+ Addr <: Addr     ; Instantiate parameter Addr in module mem @cpu1.v:415
+ H <: H     ; Instantiate parameter cacheOut in module mem @cpu1.v:415
+ Iin <: Iin     ; Instantiate parameter Iin in module mem @cpu1.v:415
+ pipeInhibit <: mem_pipeInhibit     ; Instantiate parameter pipeInhibit in module mem @cpu1.v:415
+ pcInhibit <: mem_pcInhibit     ; Instantiate parameter pcInhibit in module mem @cpu1.v:415
+ H <: H     ; assign preLoadDataLB = ((cacheOut)>>(((~(MAR))&(3))<<(3)))&(255) @cpu1.v:443
+ H <: H     ; assign preLoadDataLH = ((cacheOut)>>((((~(MAR))>>(1))&(1))<<(4)))&(65535) @cpu1.v:444
+ H <: H     ; loadData = cacheOut @cpu1.v:446
+ IR3 <: H     ; loadData = 0 @cpu1.v:446
+ H <: H     ; loadData = ((cacheOut)>>((((~(MAR))>>(1))&(1))<<(4)))&(65535) @cpu1.v:447
+ IR3 <: H     ; loadData = 0 @cpu1.v:447
+ H <: H     ; loadData = ((cacheOut)>>(((~(MAR))&(3))<<(3)))&(255) @cpu1.v:448
+ IR3 <: H     ; loadData = 0 @cpu1.v:448
+ H <: H     ; loadData = {{24{preLoadDataLB[7]}}, preLoadDataLB[7:0]} @cpu1.v:449
+ IR3 <: H     ; loadData = 0 @cpu1.v:449
+ H <: H     ; loadData = {{16{preLoadDataLH[15]}}, preLoadDataLH[15:0]} @cpu1.v:450
+ IR3 <: H     ; loadData = 0 @cpu1.v:450
+ IR4 <: I4     ; Instantiate parameter I4 in module wb @cpu1.v:457
+ WBsel <: WBsel     ; Instantiate parameter WBsel in module wb @cpu1.v:457
+ ReadLabel <: ReadLabel     ; Instantiate parameter ReadLabel in module wb @cpu1.v:457
+ WriteLabel <: WriteLabel     ; Instantiate parameter WriteLabel in module wb @cpu1.v:457
+ WBreg <: RDbus     ; assign RDbus = WBreg @cpu1.v:466
+(WBsel==5)  =>  H <: WBreg     ; WBreg = LMDR @cpu1.v:469
+(Not(WBsel==5))  =>  WBsel <: WBreg     ; WBreg = 0 @cpu1.v:469
+(WBsel==3)  =>  (join PC4 WBsel) <: WBreg     ; WBreg = (PC4)+(8) @cpu1.v:470
+(Not(WBsel==3))  =>  WBsel <: WBreg     ; WBreg = 0 @cpu1.v:470
+ (join SavedMAR WBsel) <: WBreg     ; WBreg = SavedMAR @cpu1.v:471
+ WBsel <: WBreg     ; WBreg = 0 @cpu1.v:471
+(MRST==1)  =>  L <: IR1     ; no-sensitive-upgrade check IR1 <= 0 @cpu1.v:143
+(MRST==1)  =>  L <: IR1     ; IR1 <= 0 @cpu1.v:143
+(MRST==1)  =>  L <: IR2     ; no-sensitive-upgrade check IR2 <= 0 @cpu1.v:144
+(MRST==1)  =>  L <: IR2     ; IR2 <= 0 @cpu1.v:144
+(MRST==1)  =>  L <: IR3     ; no-sensitive-upgrade check IR3 <= 0 @cpu1.v:145
+(MRST==1)  =>  L <: IR3     ; IR3 <= 0 @cpu1.v:145
+(MRST==1)  =>  L <: IR4     ; no-sensitive-upgrade check IR4 <= 0 @cpu1.v:146
+(MRST==1)  =>  L <: IR4     ; IR4 <= 0 @cpu1.v:146
+(MRST==1)  =>  L <: exRDaddr     ; no-sensitive-upgrade check exRDaddr <= 0 @cpu1.v:148
+(MRST==1)  =>  L <: exRDaddr     ; exRDaddr <= 0 @cpu1.v:148
+(ReadLabel==1) (MRST==1)  =>  L <: H     ; memRDaddr <= 0 @cpu1.v:149
+(ReadLabel==0) (MRST==1)  =>  L <: L     ; memRDaddr <= 0 @cpu1.v:149
+(MRST==1)  =>  L <: wbRDaddr     ; no-sensitive-upgrade check wbRDaddr <= 0 @cpu1.v:150
+(MRST==1)  =>  L <: wbRDaddr     ; wbRDaddr <= 0 @cpu1.v:150
+(decodeStall==1) (Not(MRST==1))  =>  decodeStall <: IR2     ; no-sensitive-upgrade check IR2 <= 0 @cpu1.v:155
+(decodeStall==1) (Not(MRST==1))  =>  decodeStall <: IR2     ; IR2 <= 0 @cpu1.v:155
+(decodeStall==1) (Not(MRST==1))  =>  decodeStall <: exRDaddr     ; no-sensitive-upgrade check exRDaddr <= 0 @cpu1.v:156
+(decodeStall==1) (Not(MRST==1))  =>  decodeStall <: exRDaddr     ; exRDaddr <= 0 @cpu1.v:156
+(decodeStall==1) (Not(MRST==1))  =>  decodeStall <: PC3     ; no-sensitive-upgrade check PC3 <= PC2 @cpu1.v:160
+(decodeStall==1) (Not(MRST==1))  =>  decodeStall <: PC3     ; PC3 <= PC2 @cpu1.v:160
+(decodeStall==1) (Not(MRST==1))  =>  decodeStall <: IR3     ; no-sensitive-upgrade check IR3 <= IR2 @cpu1.v:161
+(decodeStall==1) (Not(MRST==1))  =>  decodeStall <: IR3     ; IR3 <= IR2 @cpu1.v:161
+(decodeStall==1) (Not(MRST==1))  =>  decodeStall <: SMDR     ; no-sensitive-upgrade check SMDR <= RTbusMuxOut @cpu1.v:162
+(decodeStall==1) (Not(MRST==1))  =>  decodeStall <: SMDR     ; SMDR <= RTbusMuxOut @cpu1.v:162
+(decodeStall==1) (Not(MRST==1))  =>  decodeStall <: MAR     ; no-sensitive-upgrade check MAR <= ALUout @cpu1.v:163
+(decodeStall==1) (Not(MRST==1))  =>  decodeStall <: MAR     ; MAR <= ALUout @cpu1.v:163
+(ReadLabel==1) (decodeStall==1) (Not(MRST==1))  =>  (join exRDaddr decodeStall) <: H     ; memRDaddr <= exRDaddr @cpu1.v:164
+(ReadLabel==0) (decodeStall==1) (Not(MRST==1))  =>  (join exRDaddr decodeStall) <: L     ; memRDaddr <= exRDaddr @cpu1.v:164
+(decodeStall==1) (Not(MRST==1))  =>  decodeStall <: PC4     ; no-sensitive-upgrade check PC4 <= PC3 @cpu1.v:167
+(decodeStall==1) (Not(MRST==1))  =>  decodeStall <: PC4     ; PC4 <= PC3 @cpu1.v:167
+(decodeStall==1) (Not(MRST==1))  =>  decodeStall <: IR4     ; no-sensitive-upgrade check IR4 <= IR3 @cpu1.v:168
+(decodeStall==1) (Not(MRST==1))  =>  decodeStall <: IR4     ; IR4 <= IR3 @cpu1.v:168
+(decodeStall==1) (Not(MRST==1))  =>  H <: H     ; LMDR <= loadData @cpu1.v:169
+(decodeStall==1) (Not(MRST==1))  =>  decodeStall <: SavedMAR     ; no-sensitive-upgrade check SavedMAR <= MAR @cpu1.v:170
+(decodeStall==1) (Not(MRST==1))  =>  decodeStall <: SavedMAR     ; SavedMAR <= MAR @cpu1.v:170
+(decodeStall==1) (Not(MRST==1))  =>  decodeStall <: wbRDaddr     ; no-sensitive-upgrade check wbRDaddr <= memRDaddr @cpu1.v:171
+(decodeStall==1) (Not(MRST==1))  =>  decodeStall <: wbRDaddr     ; wbRDaddr <= memRDaddr @cpu1.v:171
+(Not(MRST==1)) (Not(decodeStall==1))  =>  (join pipeInhibit decodeStall) <: PC1     ; no-sensitive-upgrade check PC1 <= Iaddr @cpu1.v:177
+(Not(MRST==1)) (Not(decodeStall==1))  =>  (join pipeInhibit decodeStall) <: PC1     ; PC1 <= Iaddr @cpu1.v:177
+(Not(MRST==1)) (Not(decodeStall==1))  =>  (join pipeInhibit decodeStall) <: IR1     ; no-sensitive-upgrade check IR1 <= Iin @cpu1.v:178
+(Not(MRST==1)) (Not(decodeStall==1))  =>  (join pipeInhibit decodeStall) <: IR1     ; IR1 <= Iin @cpu1.v:178
+(Not(MRST==1)) (Not(decodeStall==1))  =>  (join pipeInhibit decodeStall) <: PC2     ; no-sensitive-upgrade check PC2 <= PC1 @cpu1.v:181
+(Not(MRST==1)) (Not(decodeStall==1))  =>  (join pipeInhibit decodeStall) <: PC2     ; PC2 <= PC1 @cpu1.v:181
+(Not(MRST==1)) (Not(decodeStall==1))  =>  (join pipeInhibit decodeStall) <: IR2     ; no-sensitive-upgrade check IR2 <= IR1 @cpu1.v:182
+(Not(MRST==1)) (Not(decodeStall==1))  =>  (join pipeInhibit decodeStall) <: IR2     ; IR2 <= IR1 @cpu1.v:182
+(Not(MRST==1)) (Not(decodeStall==1))  =>  (join pipeInhibit decodeStall) <: RSbus     ; no-sensitive-upgrade check RSbus <= RS @cpu1.v:183
+(Not(MRST==1)) (Not(decodeStall==1))  =>  (join pipeInhibit decodeStall) <: RSbus     ; RSbus <= RS @cpu1.v:183
+(Not(MRST==1)) (Not(decodeStall==1))  =>  (join pipeInhibit decodeStall) <: RTbus     ; no-sensitive-upgrade check RTbus <= RT @cpu1.v:184
+(Not(MRST==1)) (Not(decodeStall==1))  =>  (join pipeInhibit decodeStall) <: RTbus     ; RTbus <= RT @cpu1.v:184
+(Not(MRST==1)) (Not(decodeStall==1))  =>  (join pipeInhibit decodeStall) <: ImmBus     ; no-sensitive-upgrade check ImmBus <= Imm @cpu1.v:185
+(Not(MRST==1)) (Not(decodeStall==1))  =>  (join pipeInhibit decodeStall) <: ImmBus     ; ImmBus <= Imm @cpu1.v:185
+(Not(MRST==1)) (Not(decodeStall==1))  =>  (join pipeInhibit decodeStall) <: exRDaddr     ; no-sensitive-upgrade check exRDaddr <= RDaddr @cpu1.v:186
+(Not(MRST==1)) (Not(decodeStall==1))  =>  (join pipeInhibit decodeStall) <: exRDaddr     ; exRDaddr <= RDaddr @cpu1.v:186
+(Not(MRST==1)) (Not(decodeStall==1))  =>  (join pipeInhibit decodeStall) <: PC3     ; no-sensitive-upgrade check PC3 <= PC2 @cpu1.v:189
+(Not(MRST==1)) (Not(decodeStall==1))  =>  (join pipeInhibit decodeStall) <: PC3     ; PC3 <= PC2 @cpu1.v:189
+(Not(MRST==1)) (Not(decodeStall==1))  =>  (join pipeInhibit decodeStall) <: IR3     ; no-sensitive-upgrade check IR3 <= IR2 @cpu1.v:190
+(Not(MRST==1)) (Not(decodeStall==1))  =>  (join pipeInhibit decodeStall) <: IR3     ; IR3 <= IR2 @cpu1.v:190
+(Not(MRST==1)) (Not(decodeStall==1))  =>  (join pipeInhibit decodeStall) <: SMDR     ; no-sensitive-upgrade check SMDR <= RTbusMuxOut @cpu1.v:191
+(Not(MRST==1)) (Not(decodeStall==1))  =>  (join pipeInhibit decodeStall) <: SMDR     ; SMDR <= RTbusMuxOut @cpu1.v:191
+(Not(MRST==1)) (Not(decodeStall==1))  =>  (join pipeInhibit decodeStall) <: MAR     ; no-sensitive-upgrade check MAR <= ALUout @cpu1.v:192
+(Not(MRST==1)) (Not(decodeStall==1))  =>  (join pipeInhibit decodeStall) <: MAR     ; MAR <= ALUout @cpu1.v:192
+(ReadLabel==1) (Not(MRST==1)) (Not(decodeStall==1))  =>  (join exRDaddr (join pipeInhibit decodeStall)) <: H     ; memRDaddr <= exRDaddr @cpu1.v:193
+(ReadLabel==0) (Not(MRST==1)) (Not(decodeStall==1))  =>  (join exRDaddr (join pipeInhibit decodeStall)) <: L     ; memRDaddr <= exRDaddr @cpu1.v:193
+(Not(MRST==1)) (Not(decodeStall==1))  =>  (join pipeInhibit decodeStall) <: PC4     ; no-sensitive-upgrade check PC4 <= PC3 @cpu1.v:196
+(Not(MRST==1)) (Not(decodeStall==1))  =>  (join pipeInhibit decodeStall) <: PC4     ; PC4 <= PC3 @cpu1.v:196
+(Not(MRST==1)) (Not(decodeStall==1))  =>  (join pipeInhibit decodeStall) <: IR4     ; no-sensitive-upgrade check IR4 <= IR3 @cpu1.v:197
+(Not(MRST==1)) (Not(decodeStall==1))  =>  (join pipeInhibit decodeStall) <: IR4     ; IR4 <= IR3 @cpu1.v:197
+(Not(MRST==1)) (Not(decodeStall==1))  =>  H <: H     ; LMDR <= loadData @cpu1.v:198
+(Not(MRST==1)) (Not(decodeStall==1))  =>  (join pipeInhibit decodeStall) <: SavedMAR     ; no-sensitive-upgrade check SavedMAR <= MAR @cpu1.v:199
+(Not(MRST==1)) (Not(decodeStall==1))  =>  (join pipeInhibit decodeStall) <: SavedMAR     ; SavedMAR <= MAR @cpu1.v:199
+(Not(MRST==1)) (Not(decodeStall==1))  =>  (join pipeInhibit decodeStall) <: wbRDaddr     ; no-sensitive-upgrade check wbRDaddr <= memRDaddr @cpu1.v:200
+(Not(MRST==1)) (Not(decodeStall==1))  =>  (join pipeInhibit decodeStall) <: wbRDaddr     ; wbRDaddr <= memRDaddr @cpu1.v:200
+(ReadLabel==1) (PCsel==30)  =>  (join PCsel (join decodeStall H)) <: PC     ; no-sensitive-upgrade check PC <= PCinc @cpu1.v:238
+(ReadLabel==0) (PCsel==30)  =>  (join PCsel (join decodeStall L)) <: PC     ; no-sensitive-upgrade check PC <= PCinc @cpu1.v:238
+(ReadLabel==1) (PCsel==30)  =>  (join PCsel (join decodeStall H)) <: PC     ; PC <= PCinc @cpu1.v:238
+(ReadLabel==0) (PCsel==30)  =>  (join PCsel (join decodeStall L)) <: PC     ; PC <= PCinc @cpu1.v:238
+(ReadLabel==1) (PCsel==29)  =>  (join PCsel (join decodeStall H)) <: PC     ; no-sensitive-upgrade check PC <= PCbr @cpu1.v:239
+(ReadLabel==0) (PCsel==29)  =>  (join PCsel (join decodeStall L)) <: PC     ; no-sensitive-upgrade check PC <= PCbr @cpu1.v:239
+(ReadLabel==1) (PCsel==29)  =>  (join PCsel (join decodeStall H)) <: PC     ; PC <= PCbr @cpu1.v:239
+(ReadLabel==0) (PCsel==29)  =>  (join PCsel (join decodeStall L)) <: PC     ; PC <= PCbr @cpu1.v:239
+(ReadLabel==1) (PCsel==27)  =>  (join PCsel (join decodeStall H)) <: PC     ; no-sensitive-upgrade check PC <= PCjmp @cpu1.v:240
+(ReadLabel==0) (PCsel==27)  =>  (join PCsel (join decodeStall L)) <: PC     ; no-sensitive-upgrade check PC <= PCjmp @cpu1.v:240
+(ReadLabel==1) (PCsel==27)  =>  (join PCsel (join decodeStall H)) <: PC     ; PC <= PCjmp @cpu1.v:240
+(ReadLabel==0) (PCsel==27)  =>  (join PCsel (join decodeStall L)) <: PC     ; PC <= PCjmp @cpu1.v:240
+(ReadLabel==1) (PCsel==15)  =>  (join PCsel (join decodeStall H)) <: PC     ; no-sensitive-upgrade check PC <= RSbusMuxOut @cpu1.v:241
+(ReadLabel==0) (PCsel==15)  =>  (join PCsel (join decodeStall L)) <: PC     ; no-sensitive-upgrade check PC <= RSbusMuxOut @cpu1.v:241
+(ReadLabel==1) (PCsel==15)  =>  (join PCsel (join decodeStall H)) <: PC     ; PC <= RSbusMuxOut @cpu1.v:241
+(ReadLabel==0) (PCsel==15)  =>  (join PCsel (join decodeStall L)) <: PC     ; PC <= RSbusMuxOut @cpu1.v:241
+(ReadLabel==1)  =>  (join decodeStall H) <: num_instructions     ; no-sensitive-upgrade check num_instructions <= (num_instructions)+(1) @cpu1.v:243
+(ReadLabel==0)  =>  (join decodeStall L) <: num_instructions     ; no-sensitive-upgrade check num_instructions <= (num_instructions)+(1) @cpu1.v:243
+(ReadLabel==1)  =>  (join decodeStall H) <: num_instructions     ; num_instructions <= (num_instructions)+(1) @cpu1.v:243
+(ReadLabel==0)  =>  (join decodeStall L) <: num_instructions     ; num_instructions <= (num_instructions)+(1) @cpu1.v:243
+ pipeInhibit <: rInstIsSyscall     ; no-sensitive-upgrade check rInstIsSyscall <= (instIsSyscall)&(~(pipeInhibit)) @cpu1.v:295
+ pipeInhibit <: rInstIsSyscall     ; rInstIsSyscall <= (instIsSyscall)&(~(pipeInhibit)) @cpu1.v:295
+ pipeInhibit <: rrInstIsSyscall     ; no-sensitive-upgrade check rrInstIsSyscall <= rInstIsSyscall @cpu1.v:296
+ pipeInhibit <: rrInstIsSyscall     ; rrInstIsSyscall <= rInstIsSyscall @cpu1.v:296
+(MD_ready==1)  =>  MD_ready <: currentMDtype     ; no-sensitive-upgrade check currentMDtype <= iMDtype @cpu1.v:299
+(MD_ready==1)  =>  MD_ready <: currentMDtype     ; currentMDtype <= iMDtype @cpu1.v:299
+(ReadLabel==1)  =>  pipeInhibit <: H     ; pcInhibit <= pipeInhibit @cpu1.v:301
+(ReadLabel==0)  =>  pipeInhibit <: L     ; pcInhibit <= pipeInhibit @cpu1.v:301
