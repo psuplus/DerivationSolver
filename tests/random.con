@@ -1,0 +1,5 @@
+; assertions to be verified
+(h==0) => H <: A ; 
+B <: L ;
+A <: C ;
+(Not(h==0)) => A <: B ;

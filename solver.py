@@ -200,7 +200,7 @@ class PartitionDerivationSolver:
 
         print "\nExecution Time: {0:.5f}".format(self.time)
         if solve:
-            print "Solution:"
+            print "Solution with private label:"
             print self.pretty_solution()
         else:
             print "Unsatisfiable:"
