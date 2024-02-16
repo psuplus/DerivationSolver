@@ -1,7 +1,7 @@
-Derivation Solver 
+#Derivation Solver 
 
 
-# License Notice
+##License Notice
 ****************************
 Derivation Solver provides implementation of derivation solvers for dependent 
 type inference. It consists of four constraint solvers, i.e., one-shot, 
@@ -26,7 +26,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
 
-# Dependency
+##Dependency
 ****************************
 
 The solvers are implemented in Python with external support from Z3.  Our 
@@ -55,7 +55,7 @@ the python in use. Please refer to the Z3 binding
 (https://github.com/Z3Prover/z3) for more details. 
 
 
-# Quick Taste
+##Quick Taste
 ****************************
 
 Here is a quick demo to run a small test case(dsram.con). By default, the 
@@ -73,7 +73,7 @@ the it is complete. The file contains the execution time for all 6 test cases.
 
 
 
-# Reproducing the evaluation result
+##Reproducing the evaluation result
 ****************************
 
 To reproduce the evaluation result reported in the paper, here are the steps:
@@ -110,7 +110,7 @@ $ gnuplot -c plot-seq-comb.gnu result/all-time_3333_13_21_34.csv
 
 
 
-# Reuse 
+##Reuse 
 ****************************
 
 The current implementation provides multiple levels of reuse for future needs.
