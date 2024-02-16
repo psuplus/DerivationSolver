@@ -124,7 +124,7 @@ class TestSolver(PartitionDerivationSolver):
         PartitionDerivationSolver.__init__(self, partt)
 
     def pretty_solution(self):
-        msg = "{\n"
+        msg = " {\n"
         for predicate in self.solution:
             msg += "\t" + predicate + " => {"
             empty = 0
@@ -149,8 +149,10 @@ def test_file(file_name, partts, appr):
         pconset = LeftJoinParser().parse(input_str)
         num = len(pconset)
         if globals.DEBUG:
+            print len(pretty_pcon_set_print(pconset))
             print "Constraint Set: \n" + pretty_pcon_set_print(pconset)
-            print "#constraints: " + str(num)
+            print "#predicates: " + str(num)
+            print "#predicates: " + str(pconset)
 
         cur_perform = {}
         for i in globals.Approach.keys():

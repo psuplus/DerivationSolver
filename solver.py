@@ -198,7 +198,7 @@ class PartitionDerivationSolver:
                 self.time = time.time() - t_start
                 break
 
-        print "\nExecution Time: {0:.5f}".format(self.time)
+        #print "\nExecution Time: {0:.5f}".format(self.time)
         if solve:
             print "Solution with private label:"
             print self.pretty_solution()
