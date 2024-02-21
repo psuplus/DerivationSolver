@@ -5,8 +5,10 @@ from lattice import *
 from partt import *
 from rm_solver import RMSolver
 from parser import *
+from result import *
 import time
 import globals
+import sys
 
 from typing import List
 import logging
@@ -196,15 +198,16 @@ class PartitionDerivationSolver:
         msg += "}"
         return msg
 
+
 class TestBaseSolver(unittest.TestCase):
     def test_solver_combination(self):
         solver = PartitionDerivationSolver(CombinationPartition())
         parser = CoreConstraintParser()
         for i in globals.Approach.keys():
-            self.assertTrue(solver.solve_constraint(parser.parse('''True => L <: ax And az <: ax; d>0 => H <: ay; Not(d>0) => L <: ay;
-            d>0 => H<: ay; d<0=> ay<:ax; True=>ax<:L'''), i))
+            self.assertTrue(solver.solve_constraint(parser.parse('''True => L <: ax And az <: ax; dddd>0 => H <: ay; Not(dddd>0) => L <: ay;
+            dddd>0 => H<: ay; dddd<0=> ay<:ax; True=>ax<:L'''), i))
         for i in globals.Approach.keys():
-            self.assertFalse(solver.solve_constraint(parser.parse('''a>0=>H<:a And H<:c; a<0 => a<:L And L <: b; b>0=>H <:b; And(b<0, (d<0)) => b<:L;
+            self.assertFalse(solver.solve_constraint(parser.parse('''a>0=>H<:a And H<:c; a<0 => a<:L And L <: b; b>0=>H <:b; And(bbbb<0, (dddd<0)) => b<:L;
             c>0=>H<:c And L<:a; c<0=>c<:L'''), i))
     def test_solver_sequential(self):
         solver = PartitionDerivationSolver(SequentialPartition())
@@ -216,7 +219,53 @@ class TestBaseSolver(unittest.TestCase):
             self.assertFalse(solver.solve_constraint(parser.parse('''a>0=>H<:a And H<:c; a<0 => a<:L And L <: b; b>0=>H <:b; And(b<0, (d<0)) => b<:L;
             c>0=>H<:c And L<:a; c<0=>c<:L'''), i))
 
+
 if __name__ == '__main__':
-    unittest.main(argv=['first-arg-is-ignored'], exit=False,verbosity=2)
+#     if len(sys.argv) <= 1:
+#         print ("Usage: test_solver.py [test_file] -op [op]")
+#         print ("\t [test_file]: test file .con; use \'all\' to run all the file under tests/")
+#         print ("\t -partt [0-1]: -partt [0-1]: specifying partition algorithm: 0=sequential,")
+#         print ("\t\t\t1=combinational; if not specified, it tests all the partt ")
+#         print ("\t\t\talgorithms")
+#         print ("\t -appr [0-3]: specifying approaches: 0=hybrid, 1=early-accept, 2=one-shot,")
+#         print ("\t\t\t3=early-reject; if not specified, it tests [0,1,2] approaches.")
+#         print ("\t -time  i : specifying time-out minutes; default i=3 min.")
+#         print ("\t -debug [0-1] : print debug message; default 1 with debug message on")
+
+#     else:
+#         file_name = output_file_name("Test1")
+#         # print file_name
+#         # try:
+#         partt = globals.ParttAlg.keys()
+#         appr = globals.Approach.keys()
+#         #appr.pop(globals.EARLY_REJECT_APPROACH)
+        
+#         for i in range(2, len(sys.argv)):
+#             if sys.argv[i] == "-partt":
+#                 partt = [int(sys.argv[i+1])]
+#                 print (partt)
+#             elif sys.argv[i] == "-appr":
+#                 appr = [int(sys.argv[i+1])]
+#             elif sys.argv[i] == "-time":
+#                 globals.STOP_MIN = float(sys.argv[i+1])
+#             elif sys.argv[i] == "-debug":
+#                 globals.DEBUG = int(sys.argv[i+1])
+
+#         file_test = sys.argv[1]
+#         if sys.argv[1] == "all":
+#             file_test = [TEST_DIR + file for file in os.listdir(TEST_DIR)]
+#             for test_file_name in file_test:
+#                 test_file(test_file_name, partt, appr)
+#         else:
+#             test_file(file_test, partt, appr)
+
+#         # save result:
+#         if files:
+#             store_result_file(file_name, files, number, partt_alg, perform)
+
+        # if sys.argv[1] == 'all':
+        #     plot_line_chart(file_name + plt_ext, partt, appr, number, partt_alg, perform)
+    unittest.main(argv=['first-arg-is-ignored'], exit=False, verbosity=2)
+    #unittest.main()
     #unittest.main(verbosity=2)
 
