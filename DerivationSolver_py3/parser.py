@@ -148,7 +148,26 @@ class CoreConstraintParser:
             pconset_op.append(PCon(key, list(set(predicates_dic[key])))) # remove redundents
 
         return self.post_process(pconset_op)
+def pretty_conset_print(conset):
+    if conset:
+        msg = "{"
+        for cons in conset[:-1]:
+            msg = msg + str(cons) + ", "
+        msg = msg + str(conset[-1]) + "}"
+        return msg
+    else:
+        return "{}"
 
+
+def pretty_pcon_set_print(pconset):
+    if pconset:
+        msg = "{\n"
+        for pcons in pconset[:-1]:
+            msg = msg + "\t" + str(pcons) + "\n"
+        msg = msg + "\t" + str(pconset[-1]) + "\n}"
+        return msg
+    else:
+        return "{}"
 class TestPaser(unittest.TestCase):
     def check_same_pconset(self, pset1, pset2):
         self.assertTrue(len(pset1)==len(pset2))
