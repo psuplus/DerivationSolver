@@ -152,7 +152,7 @@ def test_file(file_name, partts, appr):
             print len(pretty_pcon_set_print(pconset))
             print "Constraint Set: \n" + pretty_pcon_set_print(pconset)
             print "#predicates: " + str(num)
-            print "#predicates: " + str(pconset)
+            #print "#predicates: " + str(pconset)
 
         cur_perform = {}
         for i in globals.Approach.keys():
