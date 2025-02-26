@@ -19,16 +19,13 @@ def process_line(line):
     return line
 
 def remove_brackets_and_text_after_semicolon(input_file_path, output_file_path):
-    with open(input_file_path, 'r') as file:
+    with open(input_file_path, 'r', encoding='utf-8') as file:
         lines = file.readlines()
 
-    modified_lines = []
-    for line in lines:
-        modified_lines.append(process_line(line))
+    modified_lines = [process_line(line.strip()) for line in lines]
 
-    with open(output_file_path, 'w') as file:
-        for line in modified_lines:
-            file.write(line + '\n')
+    with open(output_file_path, 'w', encoding='utf-8') as file:
+        file.writelines(line + '\n' for line in modified_lines)
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
