@@ -1,23 +1,10 @@
-#     This file is part of Derivation Solver. Derivation Solver provides
-#     implementation of derivation solvers for dependent type inference.
-# 
-#     Copyright (C) 2018  Peixuan Li
-# 
-#     Derivation Solver is free software: you can redistribute it and/or modify
-#     it under the terms of the GNU General Public License as published by
-#     the Free Software Foundation, either version 3 of the License, or
-#     (at your option) any later version.
-#
-#     Derivation Solver is distributed in the hope that it will be useful,
-#     but WITHOUT ANY WARRANTY; without even the implied warranty of
-#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#     GNU General Public License for more details.
-#
-#     You should have received a copy of the GNU General Public License
-#     along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
-# 
-from parser import Label
+#!/usr/bin/env python3
+# python >= 3.7
 
+import logging
+import unittest
+
+from parser import Label
 
 class Lattice:
     def __init__(self):
@@ -36,7 +23,7 @@ class Lattice:
         if self.lowest == self.bot or self.check_sub(low, self.lowest):
             self.lowest = low
 
-    def check_sub(self, low, high):
+    def check_sub(self, low, high)->bool:
         if low == high or low == self.bot or high == self.top:
             return True
         elif low == self.top or high == self.bot:
@@ -79,90 +66,83 @@ class TwoPointLattice(Lattice):
         Lattice.__init__(self)
         self.add_sub(Label("L"), Label("H"))
 
+class TestLattice(unittest.TestCase):
+    def test_lattice_sub(self):
+        l1 = Label("L1")
+        l2 = Label("L2")
+        l3 = Label("L3")
+        l4 = Label("L4")
+        l5 = Label("L5")
+        l6 = Label("L6")
+        lattice = Lattice()
+        lattice.add_sub(l5, l4)
+        lattice.add_sub(l2, l4)
+        lattice.add_sub(l2, l3)
+        lattice.add_sub(l4, l6)
+        lattice.add_sub(l1, l3)
+        lb = lattice.bot
+        lt = lattice.top
+        self.assertTrue(lattice.check_sub(l1, l2)==False)
+        self.assertTrue(lattice.check_sub(Label("L1"), l3)==True)
+        self.assertTrue(lattice.check_sub(l1, l4)==False)
+        self.assertTrue(lattice.check_sub(l1, l5)==False)
+        self.assertTrue(lattice.check_sub(l1, l6)==False)
+        self.assertTrue(lattice.check_sub(Label("L2"), l3)==True)
+        self.assertTrue(lattice.check_sub(l2, l4)==True)
+        self.assertTrue(lattice.check_sub(l2, Label("L5"))==False)
+        self.assertTrue(lattice.check_sub(l2, l6)==True)
+        self.assertTrue(lattice.check_sub(Label("L3"), l4)==False)
+        self.assertTrue(lattice.check_sub(l3, l5)==False)
+        self.assertTrue(lattice.check_sub(l3, l6)==False)
+        self.assertTrue(lattice.check_sub(Label("L4"), Label("L6"))==True)
+        self.assertTrue(lattice.check_sub(l4, l5)==False)
+        self.assertTrue(lattice.check_sub(l5, l6)==True)
+        self.assertTrue(lattice.check_sub(l5, lt)==True)
+        self.assertTrue(lattice.check_sub(lt, l6)==False)
+        self.assertTrue(lattice.check_sub(l5, lb)==False)
+        self.assertTrue(lattice.check_sub(lb, l6)==True)
 
-def test_lattice_print(l1, l2, output, result, msg):
-    if output == result:
-        print('checking {0} {2} {1} - PASSED'.format(str(l1), str(l2), msg))
-    else:
-        print('checking {0} {4} {1} - FAiled with output {2}, not {3}'.format(str(l1), str(l2), str(output), str(result), msg))
+    def test_lattice_join(self):
+        l1 = Label("L1")
+        l2 = Label("L2")
+        l3 = Label("L3")
+        l4 = Label("L4")
+        l5 = Label("L5")
+        l6 = Label("L6")
+        lattice = Lattice()
+        lattice.add_sub(l5, l4)
+        lattice.add_sub(l2, l4)
+        lattice.add_sub(l2, l3)
+        lattice.add_sub(l4, l6)
+        lattice.add_sub(l1, l3)
+        lb = lattice.bot
+        lt = lattice.top
+        self.assertTrue(lattice.join(Label("L1"), l2)==l3)
+        self.assertTrue(lattice.join(l1, l3)==l3)
+        self.assertTrue(lattice.join(l1, l4)==lt)
+        self.assertTrue(lattice.join(l1, l5)==lt)
+        self.assertTrue(lattice.join(l1, l6)==lt)
+        self.assertTrue(lattice.join(l2, Label("L3"))==l3)
+        self.assertTrue(lattice.join(l2, l4)==l4)
+        self.assertTrue(lattice.join(l2, l5)==l4)
+        self.assertTrue(lattice.join(Label("L2"), l6)==l6)
+        self.assertTrue(lattice.join(l3, l4)==lt)
+        self.assertTrue(lattice.join(l3, l5)==lt)
+        self.assertTrue(lattice.join(l3, l6)==lt)
+        self.assertTrue(lattice.join(l3, l6)==lt)
+        self.assertTrue(lattice.join(Label("L4"), Label("L5"))==l4)
+        self.assertTrue(lattice.join(l4, l6)==l6)
+        self.assertTrue(lattice.join(l5, l6)==l6)
 
+        self.assertTrue(lattice.join(lt, Label("L6"))==lt)
+        self.assertTrue(lattice.join(lb, l6)==l6)
+        self.assertTrue(lattice.join(lb, l4)==l4)
+        self.assertTrue(lattice.join(l5, lt)==lt)
 
-def test_lattice_join(lattice, l1, l2, result):
-    test_lattice_print(l1, l2, lattice.join(l1, l2), result, "join")
-
-
-def test_lattice_sub(lattice, l1, l2, result):
-    test_lattice_print(l1, l2, lattice.check_sub(l1, l2), result, "<:")
-
+        self.assertTrue(lattice.join(lb, lt)==lt)
+        self.assertTrue(lattice.join(lt, lb)==lt)
+        self.assertTrue(lattice.join(lt, lt)==lt)
+        self.assertTrue(lattice.join(lb, lb)==lb)
 
 if __name__ == '__main__':
-    l1 = Label("L1")
-    l2 = Label("L2")
-    l3 = Label("L3")
-    l4 = Label("L4")
-    l5 = Label("L5")
-    l6 = Label("L6")
-    lattice = Lattice()
-    lattice.add_sub(l5, l4)
-    lattice.add_sub(l2, l5)
-    lattice.add_sub(l2, l4)
-    lattice.add_sub(l2, l3)
-    lattice.add_sub(l4, l6)
-    lattice.add_sub(l1, l3)
-    lattice.add_sub(l1, l2)
-    lb = lattice.bot
-    lt = lattice.top
-
-    print("Testing latticee Model:" + str(lattice))
-
-    for l in lattice.labels:
-        print str(l)
-
-    print lattice.lowest
-
-    # test_lattice_sub(lattice, l1, l2, False)
-    # test_lattice_sub(lattice, l1, l3, True)
-    # test_lattice_sub(lattice, l1, l4, False)
-    # test_lattice_sub(lattice, l1, l5, False)
-    # test_lattice_sub(lattice, l1, l6, False)
-    # test_lattice_sub(lattice, l2, l3, True)
-    # test_lattice_sub(lattice, l2, l4, True)
-    # test_lattice_sub(lattice, l2, l5, False)
-    # test_lattice_sub(lattice, l2, l6, True)
-    # test_lattice_sub(lattice, l3, l4, False)
-    # test_lattice_sub(lattice, l3, l5, False)
-    # test_lattice_sub(lattice, l3, l6, False)
-    # test_lattice_sub(lattice, l4, l6, True)
-    # test_lattice_sub(lattice, l4, l5, False)
-    # test_lattice_sub(lattice, l5, l6, True)
-    #
-    # test_lattice_sub(lattice, l5, lt, True)
-    # test_lattice_sub(lattice, lt, l6, False)
-    # test_lattice_sub(lattice, l5, lb, False)
-    # test_lattice_sub(lattice, lb, l6, True)
-    #
-    # test_lattice_join(lattice, l1, l2, l3)
-    # test_lattice_join(lattice, l1, l3, l3)
-    # test_lattice_join(lattice, l1, l4, lt)
-    # test_lattice_join(lattice, l1, l5, lt)
-    # test_lattice_join(lattice, l1, l6, lt)
-    # test_lattice_join(lattice, l2, l3, l3)
-    # test_lattice_join(lattice, l2, l4, l4)
-    # test_lattice_join(lattice, l2, l5, l4)
-    # test_lattice_join(lattice, l2, l6, l6)
-    # test_lattice_join(lattice, l3, l4, lt)
-    # test_lattice_join(lattice, l3, l5, lt)
-    # test_lattice_join(lattice, l3, l6, lt)
-    # test_lattice_join(lattice, l4, l6, l6)
-    # test_lattice_join(lattice, l4, l5, l4)
-    # test_lattice_join(lattice, l5, l6, l6)
-    #
-    # test_lattice_join(lattice, lt, l6, lt)
-    # test_lattice_join(lattice, lb, l6, l6)
-    # test_lattice_join(lattice, l4, lb, l4)
-    # test_lattice_join(lattice, l5, lt, lt)
-    #
-    # test_lattice_join(lattice, lb, lt, lt)
-    # test_lattice_join(lattice, lt, lb, lt)
-    # test_lattice_join(lattice, lt, lt, lt)
-    # test_lattice_join(lattice, lb, lb, lb)
+    unittest.main(verbosity=2)

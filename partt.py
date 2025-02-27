@@ -1,21 +1,3 @@
-#     This file is part of Derivation Solver. Derivation Solver provides
-#     implementation of derivation solvers for dependent type inference.
-# 
-#     Copyright (C) 2018  Peixuan Li
-# 
-#     Derivation Solver is free software: you can redistribute it and/or modify
-#     it under the terms of the GNU General Public License as published by
-#     the Free Software Foundation, either version 3 of the License, or
-#     (at your option) any later version.
-#
-#     Derivation Solver is distributed in the hope that it will be useful,
-#     but WITHOUT ANY WARRANTY; without even the implied warranty of
-#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#     GNU General Public License for more details.
-#
-#     You should have received a copy of the GNU General Public License
-#     along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
-# 
 from z3supp import Z3Supp
 import itertools as it
 import time
@@ -78,7 +60,7 @@ class PartitionContext:
             if self.time_check():
                 return None
             if globals.DEBUG:
-                print "#partt: " + str(len(self.parttset))
+                print("#partt: " + str(len(self.parttset)))
             self.parttset = self.refine_partt(self.parttset, p)
         self.stop_partt = True
 
@@ -131,16 +113,16 @@ class CombinationPartition(PartitionContext):
                 self.combination.append(comb)
             self.state += 1
             # if globals.DEBUG:
-            #     print str(self.state) + "\t" + str(self.combination)
+            #     print(str(self.state) + "\t" + str(self.combination))
         partt = self.combination.pop()
         if globals.DEBUG:
-            print "Combinations left at level " + str(self.state-1) + " :\t" + str(len(self.combination))
+            print("Combinations left at level " + str(self.state-1) + " :\t" + str(len(self.combination)))
         self.parttset = []  # forget the previous level result
         for p in partt:
             if self.time_check():
                 return None
             if globals.DEBUG:
-                print "#partt: "+ str(len(self.parttset))
+                print("#partt: "+ str(len(self.parttset)))
             self.parttset = self.refine_partt(self.parttset, p)
         self.stop_partt = (self.state > len(self.predicates))
 

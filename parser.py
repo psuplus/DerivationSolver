@@ -1,23 +1,11 @@
-#     This file is part of Derivation Solver. Derivation Solver provides
-#     implementation of derivation solvers for dependent type inference.
-# 
-#     Copyright (C) 2018  Peixuan Li
-# 
-#     Derivation Solver is free software: you can redistribute it and/or modify
-#     it under the terms of the GNU General Public License as published by
-#     the Free Software Foundation, either version 3 of the License, or
-#     (at your option) any later version.
-#
-#     Derivation Solver is distributed in the hope that it will be useful,
-#     but WITHOUT ANY WARRANTY; without even the implied warranty of
-#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#     GNU General Public License for more details.
-#
-#     You should have received a copy of the GNU General Public License
-#     along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
-# 
-from lexer import *
+#!/usr/bin/env python3
+# python >= 3.7
 
+import logging
+import unittest
+from typing import List
+
+from lexer import *
 
 class Expr:
     def __init__(self, name):
@@ -62,6 +50,8 @@ class Con:
     def __eq__(self, other):
         return isinstance(other, Con) and self.__dict__ == other.__dict__
 
+    def __hash__(self):
+        return hash(self.__str__())
 
 class PCon:
     def __init__(self, p, c):
@@ -69,10 +59,20 @@ class PCon:
         self.constraints = c
 
     def __str__(self):
-        return self.predicate + "=>" + pretty_conset_print(self.constraints)
+        msg=""
+        if self.constraints:
+            msg = "{"
+            for cons in self.constraints[:-1]:
+                msg = msg + str(cons) + ", "
+            msg = msg + str(self.constraints[-1]) + "}"
+        else:
+            msg = "{}"
+        return self.predicate + "=>" + msg
 
     def __eq__(self, other):
-        return isinstance(other, PCon) and self.__dict__ == other.__dict__
+        if isinstance(other, PCon):
+            return set(self.constraints).issuperset(set(other.constraints)) and set(self.constraints).issubset(set(other.constraints))
+        return False
 
 
 class CoreConstraintParser:
@@ -84,7 +84,7 @@ class CoreConstraintParser:
     def init_lexer(self):
         self.lexer.add_tokens(NoneToken(), AndToken(), SubToken(), SemiToken(), VariableToken())
 
-    def generate_constraint(self, t_exp1, t_sub, t_exp2):
+    def generate_constraint(self, t_exp1, t_sub, t_exp2)->Con:
         if not (isinstance(t_sub, SubToken) and isinstance(t_exp1, VariableToken)
                 and isinstance(t_exp2, VariableToken)):
             return None
@@ -96,30 +96,30 @@ class CoreConstraintParser:
             exp2 = Label(t_exp2.token_string)
         return Con(exp1, Op(t_sub.token_string), exp2)
 
-    def pre_process(self, input_str):
+    def pre_process(self, input_str:str)->str:
         return input_str
 
-    def post_process(self, pconset):
+    def post_process(self, pconset:List[PCon])->List[PCon]:
         return pconset
 
-    def generate_conset(self, input_str):
+    def generate_conset(self, input_str:str)->List[Con]:
         cons = self.lexer.tokenize(input_str)
         conset = []
-        for t_exp1, t_sub, t_exp2, t_sep in (cons[i:i + 4] for i in range(0, len(cons) / 4 * 4, 4)):
+        for t_exp1, t_sub, t_exp2, t_sep in (cons[i:i + 4] for i in range(0, len(cons) // 4 * 4 , 4)):
             constr = self.generate_constraint(t_exp1, t_sub, t_exp2)
             if constr:
                 conset.append(constr)
-        i = len(cons) / 4 * 4
+        i = len(cons) // 4 * 4
         if len(cons) == i + 3:
             constr = self.generate_constraint(cons[i], cons[i + 1], cons[i + 2])
             if constr:
                 conset.append(constr)
         return conset
 
-    def generate_predicate(self, input_str):
+    def generate_predicate(self, input_str:str)->str:
         return input_str.strip()
 
-    def parse(self, input_str):
+    def parse(self, input_str:str)->List[PCon]:
         input_str = self.pre_process(input_str)
 
         constraints = [re.split(SatToken().lex_reg, c_tokens) for c_tokens in re.split(SemiToken().lex_reg, input_str)]
@@ -145,11 +145,9 @@ class CoreConstraintParser:
             else:
                 predicates_dic[pcon.predicate] = pcon.constraints
         for key in predicates_dic:
-            pconset_op.append(PCon(key, predicates_dic[key]))
+            pconset_op.append(PCon(key, list(set(predicates_dic[key])))) # remove redundents
 
         return self.post_process(pconset_op)
-
-
 def pretty_conset_print(conset):
     if conset:
         msg = "{"
@@ -170,21 +168,35 @@ def pretty_pcon_set_print(pconset):
         return msg
     else:
         return "{}"
+class TestPaser(unittest.TestCase):
+    def check_same_pconset(self, pset1, pset2):
+        self.assertTrue(len(pset1)==len(pset2))
+        for pcon1 in pset1:
+            for pcon2 in pset2:
+                if pcon1.predicate==pcon2.predicate:
+                    self.assertTrue(pcon1==pcon2)
 
+    def test_Parser(self):
+        parser = CoreConstraintParser()
 
-def test_parser(parser, input_str):
-    pconset = parser.parse(input_str)
-    for pcons in pconset:
-        print pcons
+        pconset = parser.parse("L <: L     ; (next_state=1)  =>  L <: next_state     ;  L <: next_state    ;")
+        expects = [
+            PCon("True", [Con(Label('L'), Op('<:'), Label('L')), Con(Label('L'), Op('<:'), CVar('next_state'))]),
+            PCon("(next_state=1)", [Con(Label('L'), Op('<:'), CVar('next_state'))])
+        ]
+        self.check_same_pconset(pconset, expects)
+
+        pconset = parser.parse('''True => L <: ax And az <: ax; d>0 => H <: ay; Not(d>0) => L <: ay; d>0 => H<: ay; d>0=> ay<:ax; True=>ax<:L''')
+        expects = [
+            PCon("True", [Con(Label('L'), Op('<:'), CVar('ax')), Con(CVar('az'), Op('<:'), CVar('ax')), Con(CVar('ax'), Op('<:'), Label('L'))]),
+            PCon("d>0", [Con(Label('H'), Op('<:'), CVar('ay')),  Con(CVar('ay'), Op('<:'), CVar('ax'))]),
+            PCon("Not(d>0)", [Con(Label('L'), Op('<:'), CVar('ay'))])
+        ]
+        self.check_same_pconset(pconset, expects)
 
 
 if __name__ == '__main__':
-
-    parser = CoreConstraintParser()
-    test_parser(parser, '''True => L <: ax And az <: ax; d>0 => H <: ay; Not(d>0) => L <: ay;
-    d>0 => H<: ay; d>0=> ay<:ax; True=>ax<:L''')
-    test_parser(parser, "L <: L     ; (next_state=1)  =>  L <: next_state     ;  L <: next_state    ;")
-    test_parser(parser, "L <: L     ; (next_state=1)  =>  L <: next_state     ;  L <: next_state    ;")
+    unittest.main(verbosity=2)
 
 
 

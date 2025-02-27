@@ -1,26 +1,13 @@
-#     This file is part of Derivation Solver. Derivation Solver provides
-#     implementation of derivation solvers for dependent type inference.
-# 
-#     Copyright (C) 2018  Peixuan Li
-# 
-#     Derivation Solver is free software: you can redistribute it and/or modify
-#     it under the terms of the GNU General Public License as published by
-#     the Free Software Foundation, either version 3 of the License, or
-#     (at your option) any later version.
-#
-#     Derivation Solver is distributed in the hope that it will be useful,
-#     but WITHOUT ANY WARRANTY; without even the implied warranty of
-#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#     GNU General Public License for more details.
-#
-#     You should have received a copy of the GNU General Public License
-#     along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
-# 
+#!/usr/bin/env python3
+# python >= 3.7
+
 from z3 import *
 from lexer import VariableToken
 import re
 import time
 
+import logging
+import unittest
 
 class Z3Supp:
     time_init = 0
@@ -37,80 +24,49 @@ class Z3Supp:
 
     def init_pconset(self, pconset):
         t_start = time.time()
-        # print "Initialize the solver...And_Dict..."
+        logging.debug("Initialize the solver...And_Dict...")
         for pcon in pconset:
             self.__declare_vars(pcon.predicate)
         self.time_init = time.time() - t_start
         # exec self.declare
-        # print "Initialization for And_Dict Finished."
+        logging.debug("Initialization for And_Dict Finished.")
 
-    # def check_intersection(self, p1, p2):
-    #     and_list = list(set(p1+p2))
-    #     result = True
-    #     for index in range(1, len(and_list)):
-    #         cur = False
-    #         if (and_list[0], and_list[index]) in self.and_set:
-    #             cur = self.and_set[(and_list[0], and_list[index])]
-    #         else:
-    #             cur = self.and_set[(and_list[index], and_list[0])]
-    #         result = result and cur
-    #         if not cur:
-    #             return False
-
-    # def __generate_key(self, p1, p2):
-    #     return p1+"_"+p2
-
-    def __declare_vars(self, p):
+    def __declare_vars(self, p): # find the variables and declare them as int in Z3
         varlist = re.findall(VariableToken.lex_reg, p)
         for var in varlist:
             if var not in self.reserved and var not in self.varset:
                 self.varset.add(var)
                 declare = "{0} = Int(\'{0}\')".format(var)
-                # print declare
                 self.declare += declare+"\n"
 
-    def intersect(self, p1, p2):
+    def intersect(self, p1, p2): # Check if p1 and p2 intersects
         t_start = time.time()
+        #  Skip the trivial cases so that no Z3 processing
         if p1 == "False" or p2 == "False":
             return False
         if p1 == "True" or p2 == "True":
             return True
 
-        # key = self.__generate_key(p1, p2)
-        # if key in self.interset:
-        #     return self.interset[key]
-        # else:
-        #     key = self.__generate_key(p2, p1)
-        #     if key in self.interset:
-        #         return self.interset[key]
-
-        # self.__declare_vars(p1)
-        # self.__declare_vars(p2)
-        exec self.declare
+        self.__declare_vars(p1)
+        self.__declare_vars(p2)
+        exec(self.declare)
         s = Solver()
         stmt1 = "s.add({0})".format(p1)
         stmt2 = "s.add({0})".format(p2)
-        # print stmt1
-        # print stmt2
         eval(stmt1)
         eval(stmt2)
 
-        # self.interset[key] = (s.check() == sat)
         self.time_intersection += time.time()-t_start
         return s.check() == sat
 
-    def induct(self, p1, p2):
+    def induct(self, p1, p2): # check if p1 => p2, returns a bool
         t_start = time.time()
         if p2 == "True" or p1 == "False":
             return True
 
-        # key = self.__generate_key(p1, p2)
-        # if key in self.inductset:
-        #     return self.inductset[key]
-
-        # self.__declare_vars(p1)
-        # self.__declare_vars(p2)
-        exec self.declare
+        self.__declare_vars(p1)
+        self.__declare_vars(p2)
+        exec(self.declare)
         s = Solver()
         stmt1 = "s.add({0})".format(p1)
         stmt2 = "s.add(Not({0}))".format(p2)
@@ -119,7 +75,7 @@ class Z3Supp:
         self.time_induct += time.time() - t_start
         return s.check() == unsat
 
-    def not_p_string(self, p):
+    def not_p_string(self, p): # return not p
         if p == "True":
             return "False"
         if p == "False":
@@ -128,7 +84,7 @@ class Z3Supp:
             return p[4:-1]
         return "Not({0})".format(p)
 
-    def and_predicates(self, *predicates):
+    def and_predicates(self, *predicates): # return p1 AND p2 AND ...
         valid = []
         for p in predicates:
             if p == "False" or not self.valid_p(p):
@@ -149,39 +105,52 @@ class Z3Supp:
             result += ")"
             return result
 
-    # def and_p1_p2(self, p1, p2):
-    #     if p1 == "False" or p2 == "False":
-    #         return "False"
-    #     if p1 == "True" or p1 == p2:
-    #         return p2
-    #     elif p2 == "True":
-    #         return p1
-    #     else:
-    #         if len(p1) > 5 and p1[0:4] == "And(" and p1[-1] == ")":
-    #             p1 = p1[4:-1]
-    #         if len(p2) > 5 and p2[0:4] == "And(" and p2[-1] == ")":
-    #             p2 = p2[4:-1]
-    #         return "And({0}, {1})".format(p1, p2)
-
-    def valid_p(self, p):
+    def valid_p(self, p): # Check whether a predicate is still satisifiable 
         t_start = time.time()
         self.__declare_vars(p)
-        exec self.declare
+        exec(self.declare)
         s = Solver()
         stmt1 = "s.add({0})".format(p)
         eval(stmt1)
         self.time_valid += time.time()-t_start
         return s.check() == sat
 
+class TestZ3Supp(unittest.TestCase):
+    def test_z3Installation(self):
+        s = Solver()
+        s.add(parse_smt2_string('(declare-const x Int) (assert (< x 10)) (assert (> x 0))'))
+        self.assertEqual(str(s.check()), 'sat')
+    def test_z3Supp_induct(self):
+        z3 = Z3Supp()
+        self.assertTrue(z3.induct("x>5", "x>0"))
+        self.assertFalse(z3.induct("x>5", "x>10"))
+    def test_z3Supp_intersect(self):
+        z3 = Z3Supp()
+        self.assertTrue(z3.intersect("x>5", "x>0"))
+        self.assertFalse(z3.intersect("x>5", "x<0"))
+        self.assertTrue(z3.intersect("x>=5", "x<=5"))
+        self.assertFalse(z3.intersect("x>5", "x<5"))
+        self.assertTrue(z3.intersect("And(x+y>5, x==5)", "a+y<4+6"))
+    def test_z3Supp_valid_p(self):
+        z3 = Z3Supp()
+        self.assertTrue(z3.valid_p("And(x>5, x>0)"))
+        self.assertFalse(z3.valid_p("And(x>5, Not(x>0))"))
+    def test_z3Supp_not_p_string(self):
+        z3 = Z3Supp()
+        self.assertFalse(z3.induct("x>5", z3.not_p_string("x>0")))
+        self.assertTrue(z3.induct(z3.not_p_string("x>5"), z3.not_p_string("x>10")))
+    def test_z3Supp_and_predicates(self):
+        z3 = Z3Supp()
+        self.assertTrue(z3.valid_p(z3.and_predicates('x>5', 'y>0')))
+        self.assertFalse(z3.valid_p(z3.and_predicates('x>5', 'Not(x>0)')))
+        self.assertTrue(z3.valid_p(z3.and_predicates('x>5', 'x>0', 'y>=0', 'y<=0')))
+        self.assertFalse(z3.valid_p(z3.and_predicates('x>5', 'x>0', 'y>=0', 'y<0')))
+    def test_variable_name_extraction(self):
+        z3 = Z3Supp()
+        self.assertTrue(z3.valid_p("And(x__1>5, x__1>0)"))
+        self.assertFalse(z3.valid_p("And(x__1>5, x__1<0)"))
+        self.assertFalse(z3.valid_p("And(x_very____long_name_1__variable_name>5, x_very____long_name_1__variable_name<0)"))
+        self.assertTrue(z3.valid_p("And(x_very____long_name_1__variable_name>5, x_very____long_name_2__variable_name<0)"))
 
 if __name__ == '__main__':
-    z3 = Z3Supp()
-    print z3.intersect("And(x+y>5, x==5)", "a+y<4+6")
-    print z3.induct("x>5", "x>0")
-    print z3.induct("x>5", "x>10")
-    print z3.intersect("And(x+y>5, (x==5))", "a+y<4+6")
-    # print z3.induct("(And (x>5) (x>10))")
-    s = Solver()
-    s.add(parse_smt2_string('(declare-const x Int) (assert (< x 10)) (assert (> x 0))'))
-    # s.add(parse_smt2_string('(declare-const x Int) (assert (> x 0))'))
-    print s.check()
+    unittest.main(verbosity=2)

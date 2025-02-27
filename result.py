@@ -1,21 +1,3 @@
-#     This file is part of Derivation Solver. Derivation Solver provides
-#     implementation of derivation solvers for dependent type inference.
-# 
-#     Copyright (C) 2018  Peixuan Li
-# 
-#     Derivation Solver is free software: you can redistribute it and/or modify
-#     it under the terms of the GNU General Public License as published by
-#     the Free Software Foundation, either version 3 of the License, or
-#     (at your option) any later version.
-#
-#     Derivation Solver is distributed in the hope that it will be useful,
-#     but WITHOUT ANY WARRANTY; without even the implied warranty of
-#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#     GNU General Public License for more details.
-#
-#     You should have received a copy of the GNU General Public License
-#     along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
-# 
 import globals
 import sys
 import time
@@ -29,23 +11,23 @@ con_ext = ".con"
 RESULT_DIR = "result/"
 
 
-def output_file_name():
+def output_file_name(testfile):
     # result directory
     result_file = RESULT_DIR
 
     # add arguments
-    if len(sys.argv) <= 1:
-        return ""
+    # if len(args) <= 1:
+    #     return ""
 
-    file_name = sys.argv[1]
-    if '/' in file_name:
-        file_name = file_name[file_name.rfind('/')+1:]
-    if file_name[len(con_ext)*-1:] == con_ext:
-        file_name = file_name[:-4]
+    # file_name = args[1]
+    # if '/' in file_name:
+    #     file_name = file_name[file_name.rfind('/')+1:]
+    # if file_name[len(con_ext)*-1:] == con_ext:
+    #     file_name = file_name[:-4]
 
-    result_file += file_name
-    for i in range(2, len(sys.argv), 2):
-        result_file += sys.argv[i]+"_"+sys.argv[i+1]
+    result_file += testfile
+    # for i in range(2, len(sys.argv), 2):
+    #     result_file += args[i]+"_"+args[i+1]
 
     # add timestamp
     t0 = time.localtime()

@@ -1,23 +1,10 @@
-#     This file is part of Derivation Solver. Derivation Solver provides
-#     implementation of derivation solvers for dependent type inference.
-# 
-#     Copyright (C) 2018  Peixuan Li
-# 
-#     Derivation Solver is free software: you can redistribute it and/or modify
-#     it under the terms of the GNU General Public License as published by
-#     the Free Software Foundation, either version 3 of the License, or
-#     (at your option) any later version.
-#
-#     Derivation Solver is distributed in the hope that it will be useful,
-#     but WITHOUT ANY WARRANTY; without even the implied warranty of
-#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#     GNU General Public License for more details.
-#
-#     You should have received a copy of the GNU General Public License
-#     along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
-# 
-import re
+#!/usr/bin/env python3
+# python >= 3.7
 
+import logging
+import unittest
+
+import re
 
 class Token:
     lex_reg = ""
@@ -33,6 +20,8 @@ class Token:
     def __str__(self):
         return "(" + self.__class__.__name__ + ", " + self.token_string + ")"
 
+    def __eq__(self, other):
+        return self.__str__()==other.__str__();
 
 class Lexer:
     def __init__(self):
@@ -115,18 +104,36 @@ class SemiToken(Token):
 class UndefinedTokenError(Exception):
     pass
 
-
-def test_lexer(lexer, input_str):
-    test_tokens = lexer.tokenize(input_str)
-    for items in test_tokens:
-        print items
+class TestLexer(unittest.TestCase):
+    def test_lexer(self):
+        lexer = Lexer()
+        lexer.add_tokens(NoneToken(), AndToken(), SubToken(), SemiToken(), VariableToken(), SatToken())
+        test_tokens = lexer.tokenize('''True=> L   <: ax    And az <:   ax   ;
+        
+         H <: ay;  ''')
+        expects = [
+            VariableToken().new_token('True'),
+            SatToken().new_token('=>'),
+            VariableToken().new_token('L'),
+            SubToken().new_token('<:'),
+            VariableToken().new_token('ax'),
+            AndToken().new_token('And'),
+            VariableToken().new_token('az'),
+            SubToken().new_token('<:'),
+            VariableToken().new_token('ax'),
+            SemiToken().new_token(';'),
+            VariableToken().new_token('H'),
+            SubToken().new_token('<:'),
+            VariableToken().new_token('ay'),
+            SemiToken().new_token(';'),
+        ]
+        self.assertTrue(len(test_tokens)==len(expects))
+        for i in range(0, len(expects)):
+            self.assertTrue(test_tokens[i]==expects[i])
 
 
 if __name__ == '__main__':
-    lexer = Lexer()
-    lexer.add_tokens(NoneToken(), AndToken(), SubToken(), SemiToken(), VariableToken(), SatToken())
-
-    test_lexer(lexer, '''True => L <: ax And az <: ax; H <: ay; => L <: ay; True=>ax<:L''')
+    unittest.main(verbosity=2)
 
 
 

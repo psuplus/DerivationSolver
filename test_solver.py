@@ -141,7 +141,7 @@ class TestSolver(PartitionDerivationSolver):
 
 def test_file(file_name, partts, appr):
     if file_name[len(con_ext)*-1:] == con_ext:
-        print "Working on file: " + file_name
+        print ("Working on file: " + file_name)
         test_file = open(file_name, 'r')
         input_str = test_file.read()
         test_file.close()
@@ -149,9 +149,9 @@ def test_file(file_name, partts, appr):
         pconset = LeftJoinParser().parse(input_str)
         num = len(pconset)
         if globals.DEBUG:
-            print len(pretty_pcon_set_print(pconset))
-            print "Constraint Set: \n" + pretty_pcon_set_print(pconset)
-            print "#predicates: " + str(num)
+            print(len(pretty_pcon_set_print(pconset)))
+            print ("Constraint Set: \n" + pretty_pcon_set_print(pconset))
+            print ("#predicates: " + str(num))
             #print "#predicates: " + str(pconset)
 
         cur_perform = {}
@@ -191,27 +191,28 @@ for i in globals.Approach.keys():
 
 if __name__ == '__main__':
     if len(sys.argv) <= 1:
-        print "Usage: test_solver.py [test_file] -op [op]"
-        print "\t [test_file]: test file .con; use \'all\' to run all the file under tests/"
-        print "\t -partt [0-1]: -partt [0-1]: specifying partition algorithm: 0=sequential,"
-        print "\t\t\t1=combinational; if not specified, it tests all the partt "
-        print "\t\t\talgorithms"
-        print "\t -appr [0-3]: specifying approaches: 0=hybrid, 1=early-accept, 2=one-shot,"
-        print "\t\t\t3=early-reject; if not specified, it tests [0,1,2] approaches."
-        print "\t -time  i : specifying time-out minutes; default i=3 min."
-        print "\t -debug [0-1] : print debug message; default 1 with debug message on"
+        print ("Usage: test_solver.py [test_file] -op [op]")
+        print ("\t [test_file]: test file .con; use \'all\' to run all the file under tests/")
+        print ("\t -partt [0-1]: -partt [0-1]: specifying partition algorithm: 0=sequential,")
+        print ("\t\t\t1=combinational; if not specified, it tests all the partt ")
+        print ("\t\t\talgorithms")
+        print ("\t -appr [0-3]: specifying approaches: 0=hybrid, 1=early-accept, 2=one-shot,")
+        print ("\t\t\t3=early-reject; if not specified, it tests [0,1,2] approaches.")
+        print ("\t -time  i : specifying time-out minutes; default i=3 min.")
+        print ("\t -debug [0-1] : print debug message; default 1 with debug message on")
 
     else:
-        file_name = output_file_name()
+        file_name = output_file_name("Test_file")
         # print file_name
         # try:
         partt = globals.ParttAlg.keys()
         appr = globals.Approach.keys()
-        appr.pop(globals.EARLY_REJECT_APPROACH)
+        #appr.pop(globals.EARLY_REJECT_APPROACH)
+        #appr.pop(globals.EARLY_REJECT_APPROACH)
         for i in range(2, len(sys.argv)):
             if sys.argv[i] == "-partt":
                 partt = [int(sys.argv[i+1])]
-                print partt
+                print (partt)
             elif sys.argv[i] == "-appr":
                 appr = [int(sys.argv[i+1])]
             elif sys.argv[i] == "-time":
