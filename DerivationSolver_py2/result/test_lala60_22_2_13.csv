@@ -1,0 +1,3 @@
+TestFile,	ConNum,	ParttAlg,	Hybrid,	Early_Accept,	One_Shot,	Early_Reject
+test_lala,	6,	0,	0.600440979004,	0.459701061249,	1.05750083923,	0
+test_lala,	6,	1,	0.454977989197,	0.267729997635,	1.05733799934,	0

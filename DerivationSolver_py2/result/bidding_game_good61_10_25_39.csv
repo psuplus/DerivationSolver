@@ -1,0 +1,3 @@
+TestFile,	ConNum,	ParttAlg,	Hybrid,	Early_Accept,	One_Shot,	Early_Reject
+bidding_game_good,	6,	0,	0.600016117096,	0.459745168686,	1.05608201027,	0
+bidding_game_good,	6,	1,	0.454752922058,	0.268923997879,	1.05375003815,	0
