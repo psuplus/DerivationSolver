@@ -17,7 +17,7 @@
 #     along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 # 
 DEBUG = 1
-STOP_MIN = 3
+STOP_MIN = 180
 
 SEQ_PARTT = 0
 COMB_PARTT = 1

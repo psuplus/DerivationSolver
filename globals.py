@@ -1,5 +1,5 @@
 DEBUG = 1
-STOP_MIN = 3
+STOP_MIN = 240
 
 SEQ_PARTT = 'seq'
 COMB_PARTT = 'comb'

@@ -1,0 +1,3 @@
+TestFile,	ConNum,	ParttAlg,	Hybrid,	Early_Accept,	One_Shot,	Early_Reject
+ts/bidding_new_build_nobr,	4,	0,	0.173280000687,	0.126342058182,	0.477401018143,	0
+ts/bidding_new_build_nobr,	4,	1,	0.306335926056,	0.166369915009,	0.279711008072,	0

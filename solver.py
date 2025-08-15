@@ -15,7 +15,7 @@ import logging
 import unittest
 
 class PartitionDerivationSolver:
-    def __init__(self, partt=SequentialPartition(), lat=TwoPointLattice(), timeout=3):
+    def __init__(self, partt=SequentialPartition(), lat=TwoPointLattice(), timeout=10):
         assert isinstance(lat, Lattice)
         assert isinstance(partt, PartitionContext)
         self.lattice = lat

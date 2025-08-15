@@ -1,0 +1,3 @@
+TestFile,	ConNum,	ParttAlg,	Hybrid,	Early_Accept,	Early_Reject,	One_Shot
+battleship_auto_nobr,	4,	seq,	1.021181583404541,	0.6517782211303711,	1.0285232067108154,	0.6355421543121338
+battleship_auto_nobr,	4,	comb,	0.19722747802734375,	0.1427464485168457,	5.010331630706787,	0.63504958152771
